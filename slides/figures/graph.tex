@@ -1,0 +1,106 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows}
+% Required package
+
+\begin {document} 
+% Input layer neurons'number
+\newcommand{\inputnum}{4}  
+% Hidden layer neurons'number
+\newcommand{\hiddennum}{3}   
+% Output layer neurons'number
+\newcommand{\outputnum}{2} 
+ 
+\begin{tikzpicture}
+ 
+% Input Layer
+\foreach \i in {1,...,\inputnum}
+{
+    \node[circle, 
+        minimum size = 6mm,
+        fill=orange!30] (Input-\i) at (0,-\i) {};
+}
+
+% input bias
+\node[circle, 
+        minimum size = 6mm,
+        fill=orange!10] (bias-1) at (0,-\inputnum -1 ) {};
+ 
+% Hidden Layer
+\foreach \i in {1,...,\hiddennum}
+{
+    \node[circle, 
+        minimum size = 6mm,
+        fill=teal!50,
+        yshift=(\hiddennum-\inputnum)*5 mm
+    ] (Hidden-\i) at (3,-\i) {};
+}
+
+% hidden bias
+\node[circle, 
+        minimum size = 6mm,
+        fill=teal!10,
+        yshift=(\hiddennum-\inputnum)*5 mm] (bias-2) at (3,-\hiddennum -1 ) {};
+
+% Output Layer
+\foreach \i in {1,...,\outputnum}
+{
+    \node[circle, 
+        minimum size = 6mm,
+        fill=purple!50,
+        yshift=(\outputnum-\inputnum)*5 mm
+    ] (Output-\i) at (6,-\i) {};
+}
+ 
+% Connect neurons In-Hidden
+\foreach \i in {1,...,\inputnum}
+{
+    \foreach \j in {1,...,\hiddennum}
+    {
+        \draw[->, shorten >=1pt] (Input-\i) -- (Hidden-\j);   
+    }
+}
+
+\foreach \j in {1,...,\hiddennum}
+    {
+        \draw[->, shorten >=1pt] (bias-1) -- (Hidden-\j);   
+    }
+% Connect neurons Hidden-Out
+\foreach \i in {1,...,\hiddennum}
+{
+    \foreach \j in {1,...,\outputnum}
+    {
+        \draw[->, shorten >=1pt] (Hidden-\i) -- (Output-\j);
+    }
+}
+ 
+\foreach \j in {1,...,\outputnum}
+    {
+        \draw[->, shorten >=1pt] (bias-2) -- (Output-\j);
+    }
+% Inputs
+\foreach \i in {1,...,\inputnum}
+{            
+    \draw[<-, shorten <=1pt] (Input-\i) -- ++(-1,0)
+        node[left]{$x_{\i}$};
+}
+\draw[<-, shorten <=1pt] (bias-1) -- ++(-1,0)
+        node[left]{$1$};
+        
+\draw[<-, shorten <=1pt] (bias-2) -- ++(-1,0)
+        node[left]{$1$};
+        
+% Outputs
+\foreach \i in {1,...,\outputnum}
+{            
+    \draw[->, shorten <=1pt] (Output-\i) -- ++(1,0)
+        node[right]{$y_{\i}$};
+}
+ 
+\end{tikzpicture}
+ 
+\end{document}

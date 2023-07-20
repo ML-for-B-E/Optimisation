@@ -51,12 +51,11 @@
 {An introduction to optimization for machine learning}
 \author
 [Le Riche et al.]
-{\large Rodolphe Le Riche$^1$, Dédji Brian Whannou$^2$, Kévin Kpakpo Akouété$^3$, Trésor Djigui Abiola$^4$} 
+{\large Rodolphe Le Riche$^1$, Dédji Brian Whannou$^2$, Kévin Kpakpo Akouété$^3$} 
 \institute[CNRS/fondat. Vallet]{
 $^1$ CNRS LIMOS at Mines Saint-Etienne, France \\
 $^2$ UBS Group AG \\
-$^3$ Descartes Underwriting \\
-$^4$ Descartes \& Mauss
+$^3$ Descartes Underwriting 
 } 
 \date[July 2023]{July 2023 \\
 Ecole d'Eté en Intelligence Artificielle \\
@@ -728,77 +727,88 @@ If the direction is the gradient,
 
 \subsection{Search directions for acceleration}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Gradient with momentum (1)} 
-Recall fixed step gradient descent, 
-\begin{equation*} 
-%x^{i+1} = x^i + \alpha s^i  \quad\text{ where }\quad s^i= -\grad f(x^i) 
-x^{i+1}= x^i - \bar\alpha \grad f(x^i) \quad\text{ i.e., }\quad s^i = x^{i+1}-x^i = - \bar\alpha \grad f(x^i)
-\end{equation*} 
-$s^i$, the step, eventually corrected by a line search ($x^{i+1}= x^i + \alpha^i s^i/\lVert s^i \rVert$).
-Introduce a momentum (a memory) in the search step \cite{polyak1964some},
-\begin{equation*} 
-s^i = -\bar\alpha\grad f(x^i) + \beta (x^i -x^{i-1})
-\end{equation*} 
-where\footnote{alternatively, for iteration varying momentum, $\beta^i=(i-2)/(i+1)$} $\beta = 0.9$.\\
-\vspace{-0.2cm}
-\begin{minipage}[c]{0.5\textwidth}
-This should contribute to avoid the oscillations occuring at the botton of valleys.\\
-$s^i$ still a descent direction (assuming perfect line search).
-\end{minipage}
-\begin{minipage}[c]{0.4\textwidth}
-\begin{center}
-\includegraphics[width=0.9\textwidth]{momentum-crop.pdf} 
-\end{center}
-\end{minipage}
-\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}
+%\frametitle{Gradient with momentum (1)} 
+%Recall fixed step gradient descent, 
+%\begin{equation*} 
+%%x^{i+1} = x^i + \alpha s^i  \quad\text{ where }\quad s^i= -\grad f(x^i) 
+%x^{i+1}= x^i - \bar\alpha \grad f(x^i) \quad\text{ i.e., }\quad s^i = x^{i+1}-x^i = - \bar\alpha \grad f(x^i)
+%\end{equation*} 
+%$s^i$, the step, eventually corrected by a line search ($x^{i+1}= x^i + \alpha^i s^i/\lVert s^i \rVert$).
+%Introduce a momentum (a memory) in the search step \cite{polyak1964some},
+%\begin{equation*} 
+%s^i = -\bar\alpha\grad f(x^i) + \beta (x^i -x^{i-1})
+%\end{equation*} 
+%where\footnote{alternatively, for iteration varying momentum, $\beta^i=(i-2)/(i+1)$} $\beta = 0.9$.\\
+%\vspace{-0.2cm}
+%\begin{minipage}[c]{0.5\textwidth}
+%This should contribute to avoid the oscillations occuring at the botton of valleys.\\
+%$s^i$ still a descent direction (assuming perfect line search).
+%\end{minipage}
+%\begin{minipage}[c]{0.4\textwidth}
+%\begin{center}
+%\includegraphics[width=0.9\textwidth]{momentum-crop.pdf} 
+%\end{center}
+%\end{minipage}
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}
+%\frametitle{Gradient with momentum (2)} 
+%%Back to Rosenbrock, $d=2$, $x^\star = (1,1) ~,~ f(x^\star) = 0$,\\ 
+%%budget=4000, $x^1=(4,4)$
+%%\vspace{-0.3cm}
+%%\begin{center}
+%%\begin{minipage}[c]{0.35\textwidth}
+%%\begin{center}
+%%gradient\\
+%%\includegraphics[width=\textwidth]{gradient_rosen_LS_budg4000_x-crop.pdf} 
+%%\end{center}
+%%\end{minipage}
+%%\begin{minipage}[c]{0.35\textwidth}
+%%\begin{center}
+%%momentum\\
+%%\includegraphics[width=\textwidth]{momentum_rosen_LS_budg4000_x-crop.pdf} 
+%%\end{center}
+%%\end{minipage}
+%%\end{center}
+%%The momentum acceleration allows to find the solution.
+%Quadratic function, 10D, condition number = 300, starts from [4,\ldots,4]
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{grad_momentum_quad_10D.pdf} 
+%\end{center}
+%The momentum acceleration gains 3 order of magnitudes in this steep valley.
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}
+%\frametitle{Nesterov accelerated gradient (NAG)} 
+%Same idea as the momentum direction, but anticipate the position of the next point in the gradient calculation
+%\cite{nesterov1983method}:
+%\begin{equation*} 
+%s^i = -\bar\alpha \grad f(x^i+\beta (x^i-x^{i-1})) + \beta (x^i -x^{i-1})
+%\end{equation*} 
+%\begin{minipage}[c]{0.5\textwidth}
+%On the sketch, $\grad f$ turns upwards and the step is adjusted accordingly.\\
+%$s^i$ is no longer necessarily a descent direction.
+%\end{minipage}
+%\begin{minipage}[c]{0.4\textwidth}
+%\begin{center}
+%\includegraphics[width=0.9\textwidth]{nag-crop.pdf} 
+%\end{center}
+%\end{minipage}
+%\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Gradient with momentum (2)} 
-%Back to Rosenbrock, $d=2$, $x^\star = (1,1) ~,~ f(x^\star) = 0$,\\ 
-%budget=4000, $x^1=(4,4)$
-%\vspace{-0.3cm}
-%\begin{center}
-%\begin{minipage}[c]{0.35\textwidth}
-%\begin{center}
-%gradient\\
-%\includegraphics[width=\textwidth]{gradient_rosen_LS_budg4000_x-crop.pdf} 
-%\end{center}
-%\end{minipage}
-%\begin{minipage}[c]{0.35\textwidth}
-%\begin{center}
-%momentum\\
-%\includegraphics[width=\textwidth]{momentum_rosen_LS_budg4000_x-crop.pdf} 
-%\end{center}
-%\end{minipage}
-%\end{center}
-%The momentum acceleration allows to find the solution.
-Quadratic function, 10D, condition number = 300, starts from [4,\ldots,4]
-\begin{center}
-\includegraphics[width=0.7\textwidth]{grad_momentum_quad_10D.pdf} 
-\end{center}
-The momentum acceleration gains 3 order of magnitudes in this steep valley.
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Nesterov accelerated gradient (NAG)} 
-Same idea as the momentum direction, but anticipate the position of the next point in the gradient calculation
-\cite{nesterov1983method}:
-\begin{equation*} 
-s^i = -\bar\alpha \grad f(x^i+\beta (x^i-x^{i-1})) + \beta (x^i -x^{i-1})
-\end{equation*} 
-\begin{minipage}[c]{0.5\textwidth}
-On the sketch, $\grad f$ turns upwards and the step is adjusted accordingly.\\
-$s^i$ is no longer necessarily a descent direction.
-\end{minipage}
-\begin{minipage}[c]{0.4\textwidth}
-\begin{center}
-\includegraphics[width=0.9\textwidth]{nag-crop.pdf} 
-\end{center}
-\end{minipage}
+\frametitle{Changing the search direction} 
+Improved gradient searches slightly (but importantly) change the search direction from minus the gradient:
+\begin{itemize}
+\item Momentum : search direction = minus gradient moved a bit towards previous search direction.
+\item Nesterov \cite{nesterov1983method} : search direction = momentum direction with an anticipation about point of the next gradient.
+\item Adam \cite{kingma2014adam} : state-of-the-art in deep learning. Stochastic gradient method with independent adaptation of each variable based on momentum.
+\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -811,24 +821,24 @@ green=gradient, red=momentum, violet=NAG
 \end{center}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Comparison of methods (2)} 
-Test convergence speed on quadratic function, $d=10$, cond. nb. = 100.
-{\small green=gradient, red=momentum, violet=NAG}
-\\\vskip\baselineskip
-\begin{minipage}[c]{0.4\textwidth}
-\begin{center}
-\includegraphics[width=\textwidth]{quadratic_d10_cond100_comparison-crop.pdf} 
-\end{center}
-\end{minipage}
-\hspace{0.6cm}
-\begin{minipage}[c]{0.4\textwidth}
-In accordance with theory, convergence speed of NAG is better than momentum which is better than gradient.\\
-Note however the plateaus (or ``ripples'') typical of NAG and likely magnified by the finite difference
-approximation to the gradient.
-\end{minipage}
-\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}
+%\frametitle{Comparison of methods (2)} 
+%Test convergence speed on quadratic function, $d=10$, cond. nb. = 100.
+%{\small green=gradient, red=momentum, violet=NAG}
+%\\\vskip\baselineskip
+%\begin{minipage}[c]{0.4\textwidth}
+%\begin{center}
+%\includegraphics[width=\textwidth]{quadratic_d10_cond100_comparison-crop.pdf} 
+%\end{center}
+%\end{minipage}
+%\hspace{0.6cm}
+%\begin{minipage}[c]{0.4\textwidth}
+%In accordance with theory, convergence speed of NAG is better than momentum which is better than gradient.\\
+%Note however the plateaus (or ``ripples'') typical of NAG and likely magnified by the finite difference
+%approximation to the gradient.
+%\end{minipage}
+%\end{frame}
 
 % a word on convergence of momentum and nag: linear, just the constant changes, which is a lot
 % compare curves
@@ -1015,7 +1025,7 @@ Execution of the \texttt{restarted\_descent} file. \\
 \frametitle{Application to neural network} 
 \begin{center}
 The practical applications are available through the \texttt{project} notebook on github,
-cf. \url{https://github.com/rleriche/Optimization_AI_Cotonou_2022/blob/main/Code/project.ipynb}
+cf. \url{https://github.com/ML-for-B-E/Optimisation/blob/main/notebook/project.ipynb}
 \end{center}
 \end{frame}
 

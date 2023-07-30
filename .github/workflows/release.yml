@@ -19,7 +19,8 @@ jobs:
     - name: Compile LaTeX document
       uses: xu-cheng/latex-action@v2
       with:
-        root_file: slides/optim_ML_intro_course.tex
+        root_file: optim_ML_intro_course.tex
+        working_directory: slides
     - name: Release
       uses: softprops/action-gh-release@v1
       with:

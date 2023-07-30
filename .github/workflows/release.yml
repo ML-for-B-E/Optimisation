@@ -1,0 +1,23 @@
+name: Build LaTeX document and release
+on:
+ push:
+  tags:
+   - "v*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: optim_ML_intro_course.tex
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: optim_ML_intro_course.pdf

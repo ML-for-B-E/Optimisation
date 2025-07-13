@@ -4,6 +4,7 @@ import optimcourse.forward_propagation as fwd
 from optimcourse.activation_functions import sigmoid
 
 
+@pytest.mark.ut
 @pytest.mark.parametrize(
     "activation", [(sigmoid), ([sigmoid]), ([[sigmoid, sigmoid, sigmoid]])]
 )
@@ -21,6 +22,7 @@ def test_forward_propagation_returns_correct_value(activation):
     np.testing.assert_allclose(output, expected_output)
 
 
+@pytest.mark.ut
 def test_vector_to_weights_returns_correct_value():
     # given
     vector = [

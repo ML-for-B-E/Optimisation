@@ -42,6 +42,7 @@ print("exact - finite_diff grads =", exact_grad - fd_grad)
 
 ########## forward_propagation
 # TODO: make sure all the tests are running
+@pytest.mark.ut
 def test_forward_nn_returns_correct_value():
     # given
     inputs = np.array([[1, 2, 5, 4]])
@@ -56,6 +57,7 @@ def test_forward_nn_returns_correct_value():
     np.testing.assert_allclose(output, expected_output)
 
 
+@pytest.mark.ut
 @pytest.mark.parametrize(
     "activation", [(sigmoid), ([sigmoid]), ([[sigmoid, sigmoid, sigmoid]])]
 )
@@ -73,6 +75,7 @@ def test_forward_nn_returns_correct_value(activation):
     np.testing.assert_allclose(output, expected_output)
 
 
+@pytest.mark.ut
 def test_vector_to_weights_returns_correct_value():
     # given
     vector = [

@@ -13,7 +13,8 @@ from optimcourse.forward_propagation import (
     weights_to_vector)
 from optimcourse.activation_functions import (
     relu,
-    sigmoid
+    sigmoid,
+    linear
 )
 from optimcourse.test_functions import (
     linear_function,
@@ -81,10 +82,6 @@ plt.show()
 #        &emsp;&emsp; "hist_time", list(int) : times of recording of full history  
 # 
 # 
-
-# In[ ]:
-
-
 #########################
 # function definition
 fun = rosen
@@ -288,10 +285,11 @@ if printlevel > 0:
 
 # ### Data structure behind the forward propagation
 # 
-# The following network has 2 layers, the first going from 4 input components to the 3 internal neurons, the second going from the 3 internal neurons outputs to the 2 outputs. Don't forget the additional weight for the neurons biases.
-
-# In[ ]:
-
+# The following network has 2 layers, the first going from 4 input components to the 3 internal neurons,
+# the second going from the 3 internal neurons outputs to the 2 outputs.
+# Don't forget the additional weight for the neurons biases.
+# weight[i,j] links entry j to output i in a given layer
+# the last column of the weights are the biases of the neurons
 
 inputs = np.array([[1,2,5,4],[1,0.2,0.15,0.024]])
 weights = [
@@ -309,8 +307,8 @@ weights = [
             ]
         )
     ]
-activation = sigmoid
-forward_propagation(inputs,weights,activation)
+activation = linear # sigmoid
+NNout = forward_propagation(inputs,weights,activation)
 
 
 # ### Create a data set 

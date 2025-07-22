@@ -7,7 +7,8 @@ import numpy as np
 from typing import Union, Callable, List
 from copy import deepcopy
 
-# TODO: make sure that the List of weights is coherent
+# TODO: there might be simpler expressions for these operations avoiding all the transpositions
+# by making the products from the left z1 = x*W1 , z2 = z1*W2 etc
 def forward_propagation(
     inputs: np.ndarray,
     weights: List[np.ndarray],

@@ -139,7 +139,7 @@ def linesearch(
     maxloop = 100  # max line search budget
 
     f_ls_best = float("inf")
-    x_ls_best = x * np.NaN
+    x_ls_best = x * np.nan
 
     condition = False
 

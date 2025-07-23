@@ -314,7 +314,6 @@ NNout = forward_propagation(inputs,weights,activation)
 # ### Create a data set 
 # The data set is made of points sampled randomly from a function.
 
-# In[ ]:
 
 
 def simulate_data_target(fun: Callable,
@@ -328,9 +327,6 @@ def simulate_data_target(fun: Callable,
     target = np.apply_along_axis(fun, 1, entry_data)
     
     return {"data": entry_data, "target": target}
-
-
-# In[ ]:
 
 
 used_function = linear_function
@@ -356,8 +352,6 @@ print("weights=",weights)
 print("dim=",dim)
 
 
-# In[ ]:
-
 
 predicted_output = forward_propagation(simulated_data["data"],weights,sigmoid)
 print(predicted_output)
@@ -368,13 +362,11 @@ print(predicted_output)
 # In[ ]:
 
 
-simulated_data["target"]
+print("data vs prediction\n")
+print(np.append(simulated_data["target"].reshape(-1,1),predicted_output,axis=1))
 
 
-# In[ ]:
 
-
-predicted_output.reshape(-1,)
 
 
 # ### Error functions 

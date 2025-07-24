@@ -121,3 +121,4 @@ def print_rec(
             ax2.plot(
                 res["hist_x_best"][:, 0], res["hist_x_best"][:, 1], "or", markersize=4
             )
+    plt.show()

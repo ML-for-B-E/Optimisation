@@ -366,9 +366,6 @@ print("data vs prediction\n")
 print(np.append(simulated_data["target"].reshape(-1,1),predicted_output,axis=1))
 
 
-
-
-
 # ### Error functions 
 # 
 # A utility function to transform a vector into weight matrices. You will probably not need it, but this is used in the calculation of the error function (the vector is transformed into NN weights, ...).
@@ -390,10 +387,8 @@ def cost_function_mse(y_predicted: np.ndarray,y_observed: np.ndarray):
     return error
 
 
-# In[ ]:
-
-
 # entropy
+# TODO : make it more robust by testing when y_predicted is equal or less than 0, or equal or larger than 1
 def cost_function_entropy(y_predicted: np.ndarray,y_observed: np.ndarray):
 
     n = len(y_observed)
@@ -406,9 +401,8 @@ def cost_function_entropy(y_predicted: np.ndarray,y_observed: np.ndarray):
     return(error)
 
 
-# In[ ]:
-
-
+# TODO: I think this function would only work for 1 output because of the reshape(-1) at the end that is not applied to the data.
+# --> make it multi-dimensional
 def error_with_parameters(vector_weights: np.ndarray,
                           network_structure: List[int],
                           activation_function: Callable,
@@ -424,8 +418,6 @@ def error_with_parameters(vector_weights: np.ndarray,
     
     return error
 
-
-# In[ ]:
 
 
 used_network_structure = [2,1] # 2 inputs features, 1 layer with 1 node

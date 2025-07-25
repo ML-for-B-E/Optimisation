@@ -238,6 +238,7 @@ def gradient_descent(
                 time=nb_fun_calls,
                 printlevel=printlevel,
             )
+        previous_x = current_x
 
         # determine search direction
         gradient_size = np.linalg.norm(current_gradient)
@@ -247,7 +248,6 @@ def gradient_descent(
         # it does not make sense to do the rest if at a null-gradient point and
         # there is a risk of exception error
         if not condition_gradient:
-            previous_x = current_x
 
             if direction_type == "gradient":
                 delta_x = -step_factor * current_gradient

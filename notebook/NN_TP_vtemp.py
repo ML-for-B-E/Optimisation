@@ -2,9 +2,13 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib  # maybe useful Ubuntu rodo ISIMA
+matplotlib.use('Qt5Agg') # maybe useful Ubuntu rodo ISIMA
+
 from typing import Callable, List
 
-from optimcourse.gradient_descent import gradient_descent
+from activation_functions import sigmoid
+from optimcourse.gradient_descent import gradient_descent, gradient_finite_diff
 from optimcourse.optim_utilities import print_rec
 from optimcourse.forward_propagation import (
     forward_propagation,
@@ -125,7 +129,7 @@ simulated_data = simulate_data_target(fun = used_function,n_features = n_feature
 # In[ ]:
 
 used_network_structure = [2,5,1]
-used_activation = leaky_relu
+used_activation = sigmoid # leaky_relu
 used_data = simulated_data
 used_cost_function = cost_function_mse
 weights = create_weights(used_network_structure)
@@ -146,21 +150,48 @@ UB = [10] * dim
 printlevel = 1
 res = gradient_descent(func = neural_network_cost,
                  start_x = weights_as_vector,
-                 LB = LB, UB = UB,budget = 10000,printlevel=printlevel)
-print_rec(res=res, fun=neural_network_cost, dim=len(res["x_best"]), 
+                 LB = LB, UB = UB,budget = 10000,printlevel=printlevel,
+                 min_step_size = 1e-13, min_grad_size = 1e-13, do_linesearch=True,step_factor=0.01, direction_type="momentum"
+            )
+print_rec(res=res, fun=neural_network_cost, dim=len(res["x_best"]),
           LB=LB, UB=UB , printlevel=printlevel, logscale = True)
+
+
 
 weights_best = vector_to_weights(res["x_best"],used_network_structure)
 
-
-# In[ ]:
+# a small study about the gradients ...
+# initial gradient
+init_grad = gradient_finite_diff(func=neural_network_cost , x=weights_as_vector , f_x=neural_network_cost(weights_as_vector))
+final_grad = gradient_finite_diff(func=neural_network_cost , x=res["x_best"] , f_x=neural_network_cost(res["x_best"]))
+#
 
 
 print("Best NN weights:",weights_best)
 
 
+######### randopt comparison ######################
+from optimcourse.random_search import random_opt
+res = random_opt(func=neural_network_cost,LB=[-5]*dim,UB=[5]*dim,budget=10000)
+
+
+
+######### scipy comparison ######################
+# from scipy.optimize import minimize
+# from scipy.optimize import show_options
+# show_options(solver='minimize',method='powell')  # get info on specific modules
+# res = minimize(neural_network_cost, weights_as_vector, method='nelder-mead',options={'xatol': 1e-12, 'disp': True,'maxfev': 100000,'adaptive': True})
+# res = minimize(neural_network_cost, weights_as_vector, method='BFGS',options={'maxiter': 100, 'disp': True, 'gtol': 1e-6})
+# res = minimize(neural_network_cost, weights_as_vector, method='powell',options={'maxfev': 10000, 'disp': True, 'ftol': 1e-9, 'xtol': 1e-9})
+
+#########  cma-es comparison ######################
+### from the terminal : pip install cma
+# import cma
+# res, es = cma.fmin2(objective_function=neural_network_cost,x0=weights_as_vector,sigma0=5,options={'popsize':300})
+## es.result.fbest has best objective, res is xbest
+
 # Compare the network prediction to the true function
-# 
+#
 
 # function definition
 dimFunc = 2

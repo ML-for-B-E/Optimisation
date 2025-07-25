@@ -176,13 +176,30 @@ x2 = np.linspace(start=LBfunc[1], stop=UBfunc[1],num=no_grid)
 x, y = np.meshgrid(x1, x2)
 xy = np.array([x,y])
 z = np.apply_along_axis(fun,0,xy)
-# work in progress
-# does not work yet
-# zNN = np.apply_along_axis(forward_propagation,0,xy,weights_best,used_activation)
-figure = plt.figure()
-axis = figure.add_subplot(111, projection='3d')
-axis.set_zlim(0,100)
-axis.plot_surface(x, y, z, cmap='jet', shade= "false")
+zNN = np.apply_along_axis(forward_propagation,0,xy,weights_best,used_activation)
+zNN = np.squeeze(zNN)
 
+# Create a figure with two 3D subplots side by side
+fig = plt.figure(figsize=(12, 6))
+# First 3D subplot
+ax1 = fig.add_subplot(121, projection='3d')  # 1 row, 2 columns, first subplot
+ax1.set_zlim(0,100)
+ax1.plot_surface(x, y, z, cmap='jet', shade= "false")
+# ax1.plot_surface(x, y, z, cmap='viridis')
+ax1.set_title('target function')
+ax1.set_xlabel('x')
+ax1.set_ylabel('y')
+ax1.set_zlabel('f')
+# Second 3D subplot
+ax2 = fig.add_subplot(122, projection='3d')  # 1 row, 2 columns, second subplot
+ax2.set_zlim(0,100)
+ax2.plot_surface(x, y, zNN, cmap='jet', shade= "false")
+# ax2.plot_surface(x, y, zNN, cmap='plasma')
+ax2.set_title('NN prediction')
+ax2.set_xlabel('x')
+ax2.set_ylabel('y')
+ax2.set_zlabel('f_{NN}')
+plt.tight_layout() # Adjust layout
+plt.show()
 
 # # **FIN DU NOTEBOOK**

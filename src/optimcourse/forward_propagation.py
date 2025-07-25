@@ -44,6 +44,8 @@ def forward_propagation(
         activation_functions, network_structure
     )
 
+    if inputs.ndim == 1:
+        inputs = inputs.reshape(1,inputs.shape[0])
     bias = np.repeat(np.array([[1]]), inputs.shape[0], axis=0)
 
     layer_input = np.append(inputs, bias, axis=1)

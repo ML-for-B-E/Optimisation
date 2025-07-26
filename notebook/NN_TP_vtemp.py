@@ -2,12 +2,11 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib  # maybe useful Ubuntu rodo ISIMA
-matplotlib.use('Qt5Agg') # maybe useful Ubuntu rodo ISIMA
+# import matplotlib  # maybe useful Ubuntu rodo ISIMA
+# matplotlib.use('Qt5Agg') # maybe useful Ubuntu rodo ISIMA
 
 from typing import Callable, List
 
-from activation_functions import sigmoid
 from optimcourse.gradient_descent import gradient_descent, gradient_finite_diff
 from optimcourse.optim_utilities import print_rec
 from optimcourse.forward_propagation import (
@@ -30,6 +29,8 @@ from optimcourse.test_functions import (
     L1norm,
     sphereL1
 )
+from optimcourse.restarted_gradient_descent import restarted_gradient_descent
+
 
 def simulate_data_target(fun: Callable,
                        n_features: int,
@@ -147,16 +148,18 @@ print("Initial cost of the NN : ",neural_network_cost(weights_as_vector))
 
 LB = [-10] * dim
 UB = [10] * dim
-printlevel = 1
-res = gradient_descent(func = neural_network_cost,
-                 start_x = weights_as_vector,
-                 LB = LB, UB = UB,budget = 10000,printlevel=printlevel,
-                 min_step_size = 1e-13, min_grad_size = 1e-13, do_linesearch=True,step_factor=0.01, direction_type="momentum"
-            )
+printlevel = 2
+# res = gradient_descent(func = neural_network_cost,
+#                  start_x = weights_as_vector,
+#                  LB = LB, UB = UB,budget = 100,printlevel=printlevel,
+#                  min_step_size = 1e-13, min_grad_size = 1e-13, do_linesearch=True,step_factor=0.01, direction_type="momentum"
+#             )
+#
+
+res = restarted_gradient_descent(func=neural_network_cost, start_x=weights_as_vector,LB=LB,UB=UB,budget=1000,nb_restarts=4,
+                                 printlevel=printlevel)
 print_rec(res=res, fun=neural_network_cost, dim=len(res["x_best"]),
-          LB=LB, UB=UB , printlevel=printlevel, logscale = True)
-
-
+           LB=LB, UB=UB , printlevel=printlevel, logscale = True)
 
 weights_best = vector_to_weights(res["x_best"],used_network_structure)
 
@@ -171,8 +174,8 @@ print("Best NN weights:",weights_best)
 
 
 ######### randopt comparison ######################
-from optimcourse.random_search import random_opt
-res = random_opt(func=neural_network_cost,LB=[-5]*dim,UB=[5]*dim,budget=10000)
+# from optimcourse.random_search import random_opt
+# res = random_opt(func=neural_network_cost,LB=[-5]*dim,UB=[5]*dim,budget=10000)
 
 
 

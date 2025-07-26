@@ -1,15 +1,14 @@
-##########################################
-########  WORK IN PROGRESS DOES NOT WORK
-##########################################
-
 import math
-from gradient_descent import gradient_descent
+
+import numpy as np
+
+from optimcourse.gradient_descent import gradient_descent
 
 def restarted_gradient_descent(
     func: object,
     start_x: np.array = None,
-    LB: np.array,
-    UB: np.array,
+    LB: np.array = None,
+    UB: np.array = None,
     budget: int = 1e3,
     nb_restarts: int = 4,
     step_factor: float = 1e-1,
@@ -28,13 +27,15 @@ def restarted_gradient_descent(
     nb_restarts (int) : number of restarts
 
     Returns:
-    res (dict) : a dictionary with the search results
+    res_total (dict) : a dictionary with the search results
 
     """
     one_budget= math.ceil(budget/nb_restarts)
+    res_total = {}
+    cum_time=0
     for iter in range(1,(nb_restarts+1)):
         # get the starting point
-        if iter==1 and start_x != None:
+        if iter==1 and start_x.any()!=False:
             one_start_x = start_x
         else:
             one_start_x = np.random.uniform(low=LB, high=UB)
@@ -52,3 +53,32 @@ def restarted_gradient_descent(
                 printlevel=printlevel
               )
 
+
+        if iter==1:
+            res_total = res
+        else:
+            if res['f_best']<res_total['f_best']:
+                res_total['f_best']=res['f_best']
+                res_total['x_best'] = res['x_best']
+
+            if printlevel>0:
+                res_total['hist_time_best'] = np.append(res_total['hist_time_best'],np.array(res['hist_time_best'])+cum_time)
+                res_total['hist_f_best'] = np.append(res_total['hist_f_best'],res['hist_f_best'])
+                res_total['hist_x_best']= np.append(res_total['hist_x_best'], res['hist_x_best'], axis=0)
+
+            if printlevel>1:
+                res_total['hist_time'] = np.append(res_total['hist_time'],
+                                                        np.array(res['hist_time']) + cum_time)
+                res_total['hist_f'] = np.append(res_total['hist_f'], res['hist_f'])
+                res_total['hist_x'] = np.append(res_total['hist_x'], res['hist_x'], axis=0)
+
+                # res.keys()
+                # Out[1]: dict_keys(['time_used', 'hist_f', 'hist_time', 'hist_x',
+                #         'x_best', 'f_best', 'hist_f_best', 'hist_time_best', 'hist_x_best', 'stop_condition'])
+
+
+
+        cum_time+=res['time_used']
+        res_total['time_used']=cum_time
+
+    return res_total

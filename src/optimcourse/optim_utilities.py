@@ -5,6 +5,8 @@ A collection of utilities for testing optimizers
 
 @author: Rodolphe Le Riche, Brian Dédji Whannou
 """
+from cProfile import label
+
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Callable, List
@@ -91,14 +93,12 @@ def print_rec(
         fig1, ax1 = plt.subplots()
         if logscale:
             plt.yscale("log")
-        ax1.plot(
-            (res["hist_time_best"] + [res["time_used"]]),
-            (res["hist_f_best"] + [res["f_best"]]),
-        )
+        ax1.plot(res["hist_time_best"], res["hist_f_best"],label="best")
         ax1.set_xlabel("no. calls to f")
         ax1.set_ylabel("f")
         if printlevel > 1:
-            ax1.plot(res["hist_time"], res["hist_f"])
+            ax1.plot(res["hist_time"], res["hist_f"],label="all points")
+        plt.legend()
         if dim == 2:
             # 2D contour plot
             # start drawing the function (necessarily dim==2)

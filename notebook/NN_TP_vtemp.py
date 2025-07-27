@@ -32,6 +32,26 @@ from optimcourse.test_functions import (
 from optimcourse.restarted_gradient_descent import restarted_gradient_descent
 
 
+###########################################################
+# Example with an analytic function
+dim = 2
+LB = [-5] * dim
+UB = [5] * dim
+zfun = rosen
+printlevel = 4
+
+# res = restarted_gradient_descent(func=zfun, LB=LB,UB=UB,start_x=np.random.uniform(low=LB,high=UB),budget=500,nb_restarts=4,
+#                                  printlevel=printlevel)
+res = restarted_gradient_descent(func=zfun, LB=LB,UB=UB,budget=500,nb_restarts=4,
+                                 printlevel=printlevel)
+print_rec(res=res, fun=zfun, dim=len(res["x_best"]),
+           LB=LB, UB=UB , printlevel=printlevel, logscale = True)
+
+###########################################################
+
+
+
+
 def simulate_data_target(fun: Callable,
                        n_features: int,
                        n_obs: int,

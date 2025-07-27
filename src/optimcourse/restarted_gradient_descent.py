@@ -6,9 +6,9 @@ from optimcourse.gradient_descent import gradient_descent
 
 def restarted_gradient_descent(
     func: object,
-    start_x: np.array = None,
-    LB: np.array = None,
-    UB: np.array = None,
+    start_x: np.ndarray = np.empty(0,),
+    LB: np.ndarray = None,
+    UB: np.ndarray = None,
     budget: int = 1e3,
     nb_restarts: int = 4,
     step_factor: float = 1e-1,
@@ -35,7 +35,7 @@ def restarted_gradient_descent(
     cum_time=0
     for iter in range(1,(nb_restarts+1)):
         # get the starting point
-        if iter==1 and start_x.any()!=False:
+        if iter == 1 and not(start_x.shape==(0,)):
             one_start_x = start_x
         else:
             one_start_x = np.random.uniform(low=LB, high=UB)

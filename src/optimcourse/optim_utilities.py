@@ -16,7 +16,7 @@ from typing import Callable, List
 
 
 def record_hist(
-    rec: dict, f: float, x: np.array, time: int, key_f: str, key_x: str, key_time: str
+    rec: dict, f: float, x: np.ndarray, time: int, key_f: str, key_x: str, key_time: str
 ) -> dict:
     """generic function to update history records"""
     if key_f not in rec:
@@ -36,7 +36,7 @@ def record_hist(
 
 
 def record_best(
-    rec: dict, fbest: float, xbest: np.array, time: int, printlevel: int
+    rec: dict, fbest: float, xbest: np.ndarray, time: int, printlevel: int
 ) -> dict:
     """create and update records of best so far"""
     rec["x_best"] = xbest
@@ -55,7 +55,7 @@ def record_best(
     return rec
 
 
-def record_any(rec: dict, f: float, x: np.array, time: int, printlevel: int) -> dict:
+def record_any(rec: dict, f: float, x: np.ndarray, time: int, printlevel: int) -> dict:
     """create and update record of any point during the search"""
     rec["time_used"] = time
     if printlevel > 1:

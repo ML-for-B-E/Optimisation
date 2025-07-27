@@ -11,8 +11,8 @@ from optimcourse.optim_utilities import record_any
 
 #%% finite difference function
 def gradient_finite_diff(
-    func: object, x: np.array, f_x: float, epsilon: float = 1e-7
-) -> np.array:
+    func: object, x: np.ndarray, f_x: float, epsilon: float = 1e-7
+) -> np.ndarray:
     """
     Gradient estimation by forward finite difference
 
@@ -22,7 +22,7 @@ def gradient_finite_diff(
     ----------
     func : object
         function.
-    x : np.array
+    x : np.ndarray
         point where the gradient is approximated.
     f_x : float
             function value at x.
@@ -31,7 +31,7 @@ def gradient_finite_diff(
 
     Returns
     -------
-    gradient : 1D np.array
+    gradient : 1D np.ndarray
         estimate of the 1D gradient of the partial derivatives at x.
 
     """
@@ -48,10 +48,10 @@ def gradient_finite_diff(
 
 #%% line search
 def linesearch(
-    x: np.array,
+    x: np.ndarray,
     f_x: float,
-    gradf: np.array,
-    direction: np.array,
+    gradf: np.ndarray,
+    direction: np.ndarray,
     func: object,
     LB: List,
     UB: List,
@@ -75,13 +75,13 @@ def linesearch(
 
     Parameters
     ----------
-    x : np.array
+    x : np.ndarray
         current point.
     f_x : float
         objective function at x.
-    gradf : np.array
+    gradf : np.ndarray
         gradient of f at x.
-    direction : np.array
+    direction : np.ndarray
         proposed search direction. Not necessarily a descent direction
         (hence works with momentum and NAG).
     func : object
@@ -109,7 +109,7 @@ def linesearch(
 
     Returns
     -------
-    next_x : np.array
+    next_x : np.ndarray
         next point found.
     n_loop-1
         cost of line search.
@@ -184,9 +184,9 @@ def linesearch(
 #%% gradient-based descent algos, work in progress. TODO : NAG, better documentation
 def gradient_descent(
     func: object,
-    start_x: np.array,
-    LB: np.array,
-    UB: np.array,
+    start_x: np.ndarray,
+    LB: np.ndarray,
+    UB: np.ndarray,
     budget: int = 1e3,
     step_factor: float = 1e-1,
     direction_type: str = "momentum",

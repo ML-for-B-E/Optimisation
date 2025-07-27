@@ -32,20 +32,20 @@ from optimcourse.test_functions import (
 from optimcourse.restarted_gradient_descent import restarted_gradient_descent
 
 
-###########################################################
-# Example with an analytic function
-dim = 2
-LB = [-5] * dim
-UB = [5] * dim
-zfun = rosen
-printlevel = 4
-
-# res = restarted_gradient_descent(func=zfun, LB=LB,UB=UB,start_x=np.random.uniform(low=LB,high=UB),budget=500,nb_restarts=4,
+# ###########################################################
+# # Example with an analytic function
+# dim = 2
+# LB = [-5] * dim
+# UB = [5] * dim
+# zfun = rosen
+# printlevel = 4
+#
+# # res = restarted_gradient_descent(func=zfun, LB=LB,UB=UB,start_x=np.random.uniform(low=LB,high=UB),budget=500,nb_restarts=4,
+# #                                  printlevel=printlevel)
+# res = restarted_gradient_descent(func=zfun, LB=LB,UB=UB,budget=500,nb_restarts=4,
 #                                  printlevel=printlevel)
-res = restarted_gradient_descent(func=zfun, LB=LB,UB=UB,budget=500,nb_restarts=4,
-                                 printlevel=printlevel)
-print_rec(res=res, fun=zfun, dim=len(res["x_best"]),
-           LB=LB, UB=UB , printlevel=printlevel, logscale = True)
+# print_rec(res=res, fun=zfun, dim=len(res["x_best"]),
+#            LB=LB, UB=UB , printlevel=printlevel, logscale = True)
 
 ###########################################################
 
@@ -150,7 +150,7 @@ simulated_data = simulate_data_target(fun = used_function,n_features = n_feature
 # In[ ]:
 
 used_network_structure = [2,5,1]
-used_activation = sigmoid # leaky_relu
+used_activation = [[sigmoid,sigmoid,sigmoid,leaky_relu,leaky_relu],[leaky_relu]]#[sigmoid,leaky_relu] #sigmoid # leaky_relu, sigmoid
 used_data = simulated_data
 used_cost_function = cost_function_mse
 weights = create_weights(used_network_structure)
@@ -166,9 +166,9 @@ print("Initial cost of the NN : ",neural_network_cost(weights_as_vector))
 # In[ ]:
 
 
-LB = [-10] * dim
-UB = [10] * dim
-printlevel = 2
+LB = [-8] * dim
+UB = [8] * dim
+printlevel = 1
 # res = gradient_descent(func = neural_network_cost,
 #                  start_x = weights_as_vector,
 #                  LB = LB, UB = UB,budget = 100,printlevel=printlevel,
@@ -176,7 +176,7 @@ printlevel = 2
 #             )
 #
 
-res = restarted_gradient_descent(func=neural_network_cost, start_x=weights_as_vector,LB=LB,UB=UB,budget=1000,nb_restarts=4,
+res = restarted_gradient_descent(func=neural_network_cost, start_x=weights_as_vector,LB=LB,UB=UB,budget=50000,nb_restarts=10,
                                  printlevel=printlevel)
 print_rec(res=res, fun=neural_network_cost, dim=len(res["x_best"]),
            LB=LB, UB=UB , printlevel=printlevel, logscale = True)

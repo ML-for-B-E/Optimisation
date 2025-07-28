@@ -104,7 +104,7 @@ def error_with_parameters(vector_weights: np.ndarray,
                           regularization: float = 0) -> float:
     
     weights = vector_to_weights(vector_weights,used_network_structure)
-    predicted_output = forward_propagation(data["data"],weights,activation_function)
+    predicted_output = forward_propagation(data["data"],weights,activation_function,logistic=__is_logistic__)
     predicted_output = predicted_output.reshape(-1,)
     
     error = cost_function(predicted_output,data["target"]) + regularization * np.sum(np.abs(vector_weights))
@@ -143,6 +143,7 @@ def neural_network_cost(vector_weights):
 
 # for classification
 
+# read data file
 with open('./donnees_mensuration.csv', mode='r', encoding='utf-8') as file:
     csv_reader = csv.reader(file,delimiter=';')
     header = next(csv_reader)
@@ -159,17 +160,29 @@ with open('./donnees_mensuration.csv', mode='r', encoding='utf-8') as file:
                 processed_row.append(item)
         meas_data.append(processed_row)
 
+#
+#  Guess gender from measurements
+#
 
-
-
+# create inputs
+n_obs = len(meas_data)
+n_features = 6 # poids taille ventre hanche epaule chaussure
+inputs = np.ndarray((n_obs,n_features))
+inputs[:,0:6]=[row[2:8] for row in meas_data[:]]
+# outputs: male=0, female=1
+gender_col = [row[1] for row in meas_data[:]]
+gender = np.array([0 if g=='Masculin' else 1 for g in gender_col])
+# put them in a dictionary
+gender_data={"data":inputs,"target":gender}
 
 # ### Create the network
 # and calculate the cost function of the first, randomly initialized, network.
 
-used_network_structure = [2,5,1]
-used_activation = [[sigmoid,sigmoid,sigmoid,leaky_relu,leaky_relu],[leaky_relu]]#[sigmoid,leaky_relu] #sigmoid # leaky_relu, sigmoid
-used_data = simulated_data
-used_cost_function = cost_function_mse
+used_network_structure = [6,5,1]
+used_activation = leaky_relu # [[sigmoid,sigmoid,sigmoid,leaky_relu,leaky_relu],[leaky_relu]]#[sigmoid,leaky_relu] #sigmoid # leaky_relu, sigmoid
+used_data = gender_data # simulated_data
+used_cost_function = cost_function_entropy # cost_function_mse
+__is_logistic__ = True
 weights = create_weights(used_network_structure)
 weights_as_vector,_ = weights_to_vector(weights)
 dim = len(weights_as_vector) 
@@ -178,8 +191,8 @@ print("Number of weights to learn : ",dim)
 print("Initial cost of the NN : ",neural_network_cost(weights_as_vector))
 
 ###  a forward propagation
-predicted_output = forward_propagation(inputs=simulated_data["data"],weights=weights,activation_functions=relu,logistic=True)
-print(predicted_output)
+# predicted_output = forward_propagation(inputs=simulated_data["data"],weights=weights,activation_functions=relu,logistic=True)
+# print(predicted_output)
 
 # ### Learn the network
 
@@ -194,7 +207,7 @@ printlevel = 1
 #             )
 #
 
-res = restarted_gradient_descent(func=neural_network_cost, start_x=weights_as_vector,LB=LB,UB=UB,budget=50000,nb_restarts=10,
+res = restarted_gradient_descent(func=neural_network_cost, start_x=weights_as_vector,LB=LB,UB=UB,budget=3000,nb_restarts=3,
                                  printlevel=printlevel)
 print_rec(res=res, fun=neural_network_cost, dim=len(res["x_best"]),
            LB=LB, UB=UB , printlevel=printlevel, logscale = True)

@@ -6,7 +6,7 @@ age;genre;poids;taille;ventre;hanche;epaule;chaussures;locomotion;sport
 7;Féminin;22;125;56;63;30;33;Pieds ou Vélo;OUI
 10;Féminin;32.45;132;65;77.5;34;35;Pieds ou Vélo;OUI
 18;Masculin;49.8;158;68.5;87.8;44.3;44;Pieds ou Vélo;OUI
-21;Masculin;61.55;170;75.8;94;46.5;52;Pieds ou Vélo;OUI
+21;Masculin;61.55;170;75.8;94;46.5;42;Pieds ou Vélo;OUI
 20;Masculin;71.1;170.5;83.2;97.2;44.5;40;Pieds ou Vélo;OUI
 13;Masculin;34.1;142.5;61.4;76;37.5;39;Pieds ou Vélo;OUI
 16;Masculin;51.11;161;68;89.5;44.5;43;Pieds ou Vélo;NON

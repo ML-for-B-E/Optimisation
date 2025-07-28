@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 # import matplotlib  # maybe useful Ubuntu rodo ISIMA
 # matplotlib.use('Qt5Agg') # maybe useful Ubuntu rodo ISIMA
+import csv
 
 from typing import Callable, List
 
@@ -79,7 +80,8 @@ def cost_function_mse(y_predicted: np.ndarray,y_observed: np.ndarray):
 
 
 # entropy
-# TODO : make it more robust by testing when y_predicted is equal or less than 0, or equal or larger than 1
+# TODO : make it more robust by testing when y_predicted is equal or less than 0, or equal or larger than 1 and
+#        by not performing the multiplication for the null terms
 def cost_function_entropy(y_predicted: np.ndarray,y_observed: np.ndarray):
 
     n = len(y_observed)
@@ -130,22 +132,39 @@ def neural_network_cost(vector_weights):
 
 # ### Generate the data
 
-# In[ ]:
+# for regression
+# used_function = quadratic
+# n_features = 2
+# n_obs = 100
+# LBfeatures = [-5] * n_features
+# UBfeatures = [5] * n_features
+# simulated_data = simulate_data_target(fun = used_function,n_features = n_features,n_obs=n_obs,
+#                                       LB=LBfeatures,UB=UBfeatures)
+
+# for classification
+
+with open('./donnees_mensuration.csv', mode='r', encoding='utf-8') as file:
+    csv_reader = csv.reader(file,delimiter=';')
+    header = next(csv_reader)
+    meas_data = []
+    for row in csv_reader:
+        # Convert numeric strings to float where applicable
+        processed_row = []
+        for item in row:
+            try:
+                # Attempt to convert to float
+                processed_row.append(float(item))
+            except ValueError:
+                # If conversion fails, keep it as a string
+                processed_row.append(item)
+        meas_data.append(processed_row)
 
 
-used_function = quadratic
-n_features = 2
-n_obs = 100
-LBfeatures = [-5] * n_features
-UBfeatures = [5] * n_features
-simulated_data = simulate_data_target(fun = used_function,n_features = n_features,n_obs=n_obs,
-                                      LB=LBfeatures,UB=UBfeatures)
+
 
 
 # ### Create the network
 # and calculate the cost function of the first, randomly initialized, network.
-
-# In[ ]:
 
 used_network_structure = [2,5,1]
 used_activation = [[sigmoid,sigmoid,sigmoid,leaky_relu,leaky_relu],[leaky_relu]]#[sigmoid,leaky_relu] #sigmoid # leaky_relu, sigmoid
@@ -158,10 +177,11 @@ dim = len(weights_as_vector)
 print("Number of weights to learn : ",dim)
 print("Initial cost of the NN : ",neural_network_cost(weights_as_vector))
 
+###  a forward propagation
+predicted_output = forward_propagation(inputs=simulated_data["data"],weights=weights,activation_functions=relu,logistic=True)
+print(predicted_output)
 
 # ### Learn the network
-
-# In[ ]:
 
 
 LB = [-8] * dim

@@ -50,8 +50,6 @@ from optimcourse.restarted_gradient_descent import restarted_gradient_descent
 ###########################################################
 
 
-
-
 def simulate_data_target(fun: Callable,
                        n_features: int,
                        n_obs: int,

@@ -6,6 +6,7 @@
 import numpy as np
 from typing import Union, Callable, List
 from copy import deepcopy
+from optimcourse.activation_functions import sigmoid
 
 # TODO: there might be simpler expressions for these operations avoiding all the transpositions
 # by making the products from the left z1 = x*W1 , z2 = z1*W2 etc
@@ -13,6 +14,7 @@ def forward_propagation(
     inputs: np.ndarray,
     weights: List[np.ndarray],
     activation_functions: Union[Callable, List[Callable], List[List[Callable]]],
+    logistic: bool = False
 ) -> np.ndarray:
     """
     Returns the output of the network.
@@ -55,6 +57,8 @@ def forward_propagation(
         layer_output = apply_activation_functions(func, layer_combinaison.T)
         layer_input = np.append(layer_output.T, bias, axis=1)
 
+    if logistic:
+        layer_output=sigmoid(layer_output)
     return layer_output.T
 
 

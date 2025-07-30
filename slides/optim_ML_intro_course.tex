@@ -609,13 +609,25 @@ The size of the steps is proportional to the gradient norm.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{(code organization)} 
+\vspace{-0.4cm}
 \begin{itemize}
-\item \texttt{main\_optim.py}: main script for starting the descent algorithms.
-\item \texttt{gradient\_descent.py}: gradient-based descent algorithms; the current gradient fixed-step version, and the ones coming up (other direction, with a line search).
+\small
+\item In \texttt{src/optimcourse}: ressource files for the optimization 
+\begin{itemize}
+\small
+\item \texttt{gradient\_descent.py},\texttt{restarted\_gradient\_descent.py}: gradient-based descent algorithms; the current gradient fixed-step version, and the ones coming up (other direction, with a line search), a version with randomly restarted searches.
 \item \texttt{random\_search.py}: a random search algorithm.
 \item \texttt{test\_functions.py}: a collection of test functions.
-\item \texttt{3D\_plots.py}: plots a 2 dimensional function in a 3D dynamic plot + contour plot.
+\item \texttt{3D\_plots.py}: plots a 2 dimensional function in 3D + contour plot.
 \item \texttt{optim\_utilities.py}: additional routines.
+\end{itemize}
+\item In \texttt{src/optimcourse}: ressource files for the NN coded from scratch
+\begin{itemize}
+\small
+\item \texttt{activation\_functions.py}: the collection of activation functions.
+\item \texttt{forward\_propagation.py}: a collection of routines for the forward propagation in a NN.
+\end{itemize}
+\item In \texttt{notebooks}: notebooks and main script for starting the descent algorithms and learning the NNs.
 \end{itemize}
 \end{frame}
 
@@ -745,7 +757,7 @@ Look at what line search does to $f(x)=$ Rosenbrock where fixed step size diverg
 Better, but not perfect: oscillations make progress very slow.
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Gradient convergence speed} 
 $f(x) = \frac{1}{2} x^\top H x$ in $n=10$ dimensions, $H>0$, not aligned with the axes, condition number = 10.
@@ -768,6 +780,34 @@ $\xi \gamma^t < \varepsilon \Leftrightarrow t > \frac{\log(\varepsilon) - \log(\
 } % end mbox
 \end{center}
 \end{frame}
+
+% I don't keep this version although it is proved in the EMSE course: 
+% because the match between the left curve and the formula is not direct.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}%[allowframebreaks]
+%\frametitle{Gradient convergence : summary}
+%$f(x) = \frac{1}{2} x^\top H x$ in $n=10$ dimensions, $H>0$, not aligned with the axes, condition number = 10.
+%\begin{center}
+%\mbox{
+%\begin{minipage}[c]{0.37\textwidth}
+%\includegraphics[width=\textwidth,height=6cm]{gradient_quad_d10_cond10_LS-lin-crop.pdf}
+%\end{minipage}
+%\hspace{0.5cm}
+%\begin{minipage}[c]{0.57\textwidth}
+%\cite{vanderbergheOptimCourse,ravikumar17,mu_li_video19}: on convex and L-strongly smooth functions,
+%gradient search with constant and sufficiently small scale factor achieves after $T$ iterations
+%\begin{equation}
+%f(x^T) - f(x^\star) \le \frac{\lVert x^0-x^\star \rVert}{2 \bar{\alpha} T}
+%\label{eq:grad_fconv}
+%\end{equation}
+%i.e., $\mathcal O(1/T)$ convergence.
+%To achieve $f(x^T)-f(x^\star) < \varepsilon$, $T>\mathcal O(1/\varepsilon)$
+%\vskip\baselineskip
+%\end{minipage}
+%} % end mbox
+%\end{center}
+%\end{frame}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

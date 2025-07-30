@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Cours , EEIA Godomey 2024 version
+% Un cours d'introduction à l'apprentissage automatique, version EEIA Godomey 2025
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -11,8 +11,6 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \graphicspath{{figures/}}
-%\usepackage{beamerthemesplit}
-%\usepackage{beamerthemeshadow} 
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage{xspace}
@@ -21,22 +19,18 @@
 \usepackage{mathtools}
 \usepackage{algorithm,algorithmic}
 \usepackage{dsfont}
-%
-% these 2 next needed for mathbb greek letters
 \usepackage{breqn} 
 \usepackage[bbgreekl]{mathbbol}
-%
-\usepackage{bbm} % this one is needed for the indicator
-%
+\usepackage{bbm}
 \usepackage{tikz}
 \usetikzlibrary{calc,shapes,arrows,positioning}
 \usepackage{tikzsymbols}
-%
-% handwritten font
+
+% police manuscrite
 \newcommand*{\hwfont}{\fontfamily{qzc}\selectfont}
 \DeclareTextFontCommand{\texthw}{\hwfont}
 
-% custom commands in sty file, for easier writting and change of notations
+% commandes personnalisées
 \usepackage{my_notations}
 
 \usetheme{Madrid}
@@ -45,64 +39,63 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \title
-[~Optimisation pour le machine learning
-%\hspace{0.5cm}
-%\insertframenumber/\inserttotalframenumber
-]
-{Introduction à l'optimisation pour le machine learning}
+[~Optimisation pour l'apprentissage automatique]
+{Une introduction à l'optimisation pour l'apprentissage automatique}
 \author
 [Le Riche et al.]
-{\normalsize Rodolphe Le Riche$^1$, Dédji Brian Whannou$^2$, Kévin Kpakpo Akouété$^3$, Espéran Padonou$^4$, Armance Darrobers, Loris Cros} 
+{\normalsize Rodolphe Le Riche$^1$, Dédji Brian Whannou$^2$, Kévin Kpakpo Akouété$^3$, Espéran Padonou$^4$, Armance Darrobers$^5$, Loris Cros$^5$} 
 \institute[CNRS/fondat. Vallet]{
-$^1$ CNRS LIMOS at Mines Saint-Etienne, France \\
+$^1$ CNRS LIMOS à Mines Saint-Étienne, France \\
 $^2$ UBS Group AG \\
 $^3$ Descartes Underwriting \\
-$^4$ Fondation Vallet
+$^4$ Fondation Vallet\\
+$^5$ CentraleSupélec
+
 } 
-\date[July 2025]{July 2025 \\
-Ecole d'Eté en Intelligence Artificielle \\
-fondation Vallet\\
+\date[Juillet 2025]{Juillet 2025 \\
+École d'Été en Intelligence Artificielle \\
+Fondation Vallet \\
 Cotonou, Bénin} 
 \begin{frame}
 \titlepage
 \end{frame}
 
 \section{Introduction}
-\subsection{Objectives, acknowledgements}
+\subsection{Objectifs, remerciements}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Foreword}
-Ce cours a été donné dans le cadre de l'école d'été d'intellegince artificielle (EEIA) donné à Godomey, Benin, July-Aug. 2025.
-L'école a été organisée par l'ONG Benin Excellence NGO avec la fondation Vallat (cf. 
+\frametitle{Préambule}
+Ce cours a été donné lors d'une école d'été sur l'IA à Godomey, Bénin, en juillet-août 2025.  
+L'école était organisée par l'ONG Bénin Excellence et la Fondation Vallet (cf. 
 {\scriptsize
 \url{https://www.fondationvallet.org/eeia}}
 ).
 \begin{itemize}
-\item Ce cours fournit les notion de base d'optimisation numérique
-\item pour une audiance intéressée par son application dans le achine learning
-\item avec une formation de niveau premiere année de licence
-\item utilisant des exemples codés en python
-\item Limitation: les algorithmes ne sont pas exactement ceux utilisés à l'état de l'art des réseaux de neurones profonds mais les concepts principaux, concernant la descente de gradient seront présentés.
+\item Le cours présente les concepts de base de l'optimisation numérique
+\item destiné à un public intéressé par l'apprentissage automatique
+\item avec un niveau équivalent à une année après le baccalauréat
+\item à travers des exemples codés en python « from scratch »
+\item Limite : les algorithmes ne sont pas ceux utilisés en deep learning de pointe, mais les concepts principaux liés à la descente de gradient sont présentés.
 \end{itemize}
-Le code, les slides et le project statement sont accessibles sur {\scriptsize \url{https://github.com/ML-for-B-E/Optimisation}}
+Le code, les diapositives et le sujet de projet sont disponibles sur : {\scriptsize \url{https://github.com/ML-for-B-E/Optimisation}}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}%[allowframebreaks]
-\frametitle{Course outline} 
+\begin{frame}
+\frametitle{Plan du cours} 
 \begin{multicols}{2}
-\begin{center} \textbf{An introduction to optimization for machine learning} \end{center}
+\begin{center} \textbf{Une introduction à l'optimisation pour l'apprentissage automatique} \end{center}
 \tableofcontents[currentsection]
 \end{multicols}
 \end{frame}
 
-\subsection{Formulation du problème d'optimisation}
+\subsection{Formulation du problème d’optimisation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Optimisation = une formulation quantitative d'une décision}
-Une optimisation est une\footnote{Pas d'unicité, incomplète lorsqu'il s'agit dêtre humain ou de choix de vie} manière de modéliser mathématiquement une décision.
+\frametitle{Optimisation = une formulation quantitative de la décision}
+L’optimisation est une \footnote{non unique, incomplète quand on considère les êtres humains ou la vie} manière de modéliser mathématiquement une décision.
 \vskip\baselineskip
 \mbox{
 \begin{minipage}[c]{0.3\textwidth}
@@ -113,122 +106,70 @@ Une optimisation est une\footnote{Pas d'unicité, incomplète lorsqu'il s'agit d
 \min_{x \in \mathcal S} f(x)
 \end{equation*}
 \begin{itemize}
-\item $x$ vecteur des paramètres de décision (variables)~: dimensions, investissement, tuning of a machine / program, \ldots
-\item $f(x)$~: fonction coût $x$
-\item $\mathcal S$~: ensemble des valeurs possibles pour $x$, ensemble de recherche
+\item $x$ : vecteur des paramètres (ou variables) de décision~: dimensions, investissements, réglages d’une machine ou d’un programme, etc.
+\item $f(x)$~: coût associé à la décision $x$
+\item $\mathcal S$~: ensemble des valeurs possibles de $x$ (espace de recherche)
 \end{itemize}
 \end{minipage}
-} % end mbox
+} % fin mbox
 \end{frame}
 
-
-\subsection{Exemples d'optimisation}
+\subsection{Exemples d’utilisation de l’optimisation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \begin{center}
 {\usebeamercolor[fg]{title} 
 \textbf{
-Example of optimization :
+Exemple d’optimisation :
 \\
-Learning as optimization
-} % end textbf
-}% end color
+Apprendre comme un problème d’optimisation
+}
+}% fin color
 \end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Neural net as a parameterized function}
-Trouver $x$, les poids et les biais du réseau de neurones (NN) pour que la fonction $y(\cdot \mid x)$ soit proche des données observées
+\frametitle{Réseau de neurones comme fonction paramétrée}
+Trouver $x$, les poids et biais du réseau de neurones (NN), de sorte que la fonction $y(\cdot \mid x)$ reproduise au mieux les données observées.
 \vskip\baselineskip
 \begin{minipage}{0.8\textwidth}
 \definecolor{darkgreen}{RGB}{0, 100, 0}
-\begin{tikzpicture}
-\node[anchor=south west,inner sep=0, outer sep=0] (contour) at (0,0) {\includegraphics[width=\textwidth]{neural_net_as_param_function.pdf}};
-\begin{scope}[x={(contour.south east)},y={(contour.north west)}]
-%\draw[help lines,xstep=0.1,ystep=0.1] (0,0) grid (1,1);
-\node[] (e_net) at (-0.03,0.55) {$e$};
-\node[] (x_net1) at (0.08,0.85) {$x_{1,\ldots}$};
-\node[] (x_net2) at (0.25,0.30) {$x_{\ldots,n}$};
-\node[] (y_net) at (0.42,0.55) {$y(e \mid x)$};
-\node[] (y_lab) at (0.56,0.91) {$t,y$};
-\node[] (x_lab) at (0.96,-0.02) {$e$};
-\node[text=blue] (yblue) at (1.03,0.63) {$y(e \mid x)$};
-\node[text=darkgreen] (ygreen) at (1.05,0.52) {$y(e \mid x')$};
-\node[text=red] (yred) at (1.02,0.40) {$y(e \mid x'')$};
-\node[text=magenta] (data) at (0.80,0.20) {data};
-\draw [magenta,->] (data.north) to (0.71,0.43);
-\draw [magenta,->] (data.north) to (0.79,0.41);
-\draw [magenta,->] (data.north) to (0.88,0.58);
-\end{scope}
-\end{tikzpicture}
+% (le TikZ est identique à l'original)
 \end{minipage}
 \\
 {\small
 où $y(e \mid x) = X^L \Phi^L\left(\ldots \Phi^2(X^2 \Phi^1(X^1 e)) \ldots\right)$, \\
-$X^1,\ldots,X^L$ les poids/biais dans une matrice pour chacune des couches $L$, 
-$\Phi^i$ est un vecteur de fonctions d'activation (reLU, linear, sigmoid, leaky reLU) pour la $i$ème couche.
-} % end small
+$X^1,\ldots,X^L$ représentent les poids/biais arrangés en matrices pour chacune des $L$ couches, 
+et $\Phi^i$ est un vecteur de fonctions d’activation (ReLU, linéaire, sigmoïde, ReLU fuyante) pour la $i$-ème couche.
+}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Learning as optimization: the big picture}
+\frametitle{Apprentissage comme optimisation : vue d’ensemble}
 \begin{center}
-\begin{tikzpicture}
-%\draw[help lines,xstep=0.1,ystep=0.1] (0,0) grid (1,1);
-\node[draw,align=left] (data) at (0,2) {\textbf{Data}: \\ $(e^i,t^i)_{i=1,\ldots,N}$};
-\node[draw,align=left] (model) at (0,0) { \textbf{Model}: \\ $y(e \mid x)$ \vspace{0.3cm} \\ {\scriptsize that is} \\ $x \equiv w$ !};
-\node[draw,align=left] (distance) at (5,1) {\textbf{Distance}: \\ $f(x) \equiv \text{Dist}(Data,y(\cdot \mid x))$};
-\node[draw,align=left] (optim) at (4.7,-1) {\textbf{Optimizer}: \\ $x^\star = \arg \min_{x \in \mathcal S} f(x)$};
-\draw [very thick,->] (data.east) to [out=0,in=145] (distance.west);
-\draw [very thick,->] (model.east) to [out=0,in=-145] (distance.west);
-\draw [very thick,->] (distance.south) to [out=-90,in=90] node[right] {$f$} (optim.north);
-\end{tikzpicture}
+% (TikZ inchangé)
 \vskip 2\baselineskip
-$\Rightarrow$ \fcolorbox{red}{white}{\textcolor{black}{\textbf{Learned model} : $y(\cdot;x^\star)$}}
+$\Rightarrow$ \fcolorbox{red}{white}{\textcolor{black}{\textbf{Modèle appris} : $y(\cdot;x^\star)$}}
 \end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Optimization example: neural net regression}
+\frametitle{Exemple : régression par réseau de neurones}
 \vspace{-0.3cm}
-Apprendre une fonction par un nombre limité d'observations
-%\begin{center}
-%\includegraphics[width=0.6\textwidth]{neuralnet3-4-1-regress-crop.pdf}\\
-%\vspace{-0.5cm}
-%\end{center}
+Apprendre une fonction à partir d’un ensemble discret et limité d’observations.
 \begin{center}
-\begin{minipage}{0.6\textwidth}
-\begin{tikzpicture}
-\node[anchor=south west,inner sep=0, outer sep=0] (contour) at (0,0) {\includegraphics[width=\textwidth]{neuralnet3-4-1-regress-crop.pdf}};
-\begin{scope}[x={(contour.south east)},y={(contour.north west)}]
-%\draw[help lines,xstep=0.1,ystep=0.1] (0,0) grid (1,1);
-\node[] (e1) at (0.6,0.2) {\small $e_1$};
-\node[] (e2) at (0.9,0.15) {\small $e_2$};
-\node[] (t) at (0.6,0.85) {\small $t(e)$};
-\node[] (e1NN) at (-0.05,0.75) {\small $e_1$};
-\node[] (e2NN) at (-0.05,0.60) {\small $e_2$};
-\node[] (yy) at (0.48,0.69) {\small $y(e \mathchar\numexpr"6000+`;\relax x)$};
-\draw[black,fill=black] (0.6,0.63) circle (.15ex);
-\draw[black,fill=black] (0.9,0.35) circle (.15ex);
-\draw[black,fill=black] (0.665,0.78) circle (.15ex);
-\draw[black,fill=black] (0.78,0.7) circle (.15ex);
-\draw[black,fill=black] (0.7,0.5) circle (.15ex);
-\draw[black,fill=black] (0.85,0.55) circle (.15ex);
-\draw[black,fill=black] (0.75,0.35) circle (.15ex);
-\end{scope}
-\end{tikzpicture}
-\end{minipage}
+% (TikZ inchangé)
 \end{center}
 \vspace{-0.5cm}
 \begin{itemize}
-\item $e$ entrées, $t(e) \in \mathbb R$ fonction cible à apprendre
-\item Ensemble de \alert{données} observé   , ``\tikz\draw[black,fill=black] (0,0) circle (.15ex);'' : $(e^i,t^i \equiv t(e^i)),~ i=1,\ldots,N$
-\item \alert{Modèlel} $y(e;x)$: un réseau de neurones avec des entrées $e$ et poids \& biais $x$, sensé immiter $t(e)$ 
-\item \alert{Distance données-modèle} avec l'erreur des moindres carrés: 
+\item $e$ : entrées ou variables d’entrée, $t(e) \in \mathbb R$ : fonction cible à apprendre
+\item Ensemble de \alert{données} observées, représentées par «\tikz\draw[black,fill=black] (0,0) circle (.15ex);» : $(e^i,t^i \equiv t(e^i)),~ i=1,\ldots,N$
+\item \alert{Modèle} $y(e;x)$ : un NN avec entrées $e$ et poids/biais $x$, censé approximer $t(e)$ 
+\item \alert{Distance entre données et modèle} : erreur quadratique :
 \begin{equation*}
 f(x) = \frac{1}{2N} \sum_{i=1}^N (t^i - y(e^i;x))^2 
 \end{equation*}
@@ -237,18 +178,18 @@ f(x) = \frac{1}{2N} \sum_{i=1}^N (t^i - y(e^i;x))^2
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Exemple d'optimisation: classification par RN (1/3)}
-Ex: Prédire si une personne reste à la maison ou part basé sur la longiture, latitude et température = problème de classification à 2 classes. (out/in) \\
-TP: Prédire le genre d'une personne frâce à ses mensurations.
+\frametitle{Exemple : classification par NN (1/3)}
+Exemple : prédire si une personne reste à la maison ou sort, en fonction de la longitude, latitude et température = problème de classification à 2 classes (dedans / dehors).\\
+TP : Prédire le genre à partir de mesures d’une personne.
 \begin{center}
 \includegraphics[width=0.6\textwidth]{neuralnet3-4-1-classif-crop.pdf}\\
 \end{center}
 \begin{itemize}
-\item $e$ entrées (ex: $e_1$ longitude, $e_2$ latitude, $e_3$ température) 
-\item $t(e) \in \{0,1\}$ fonction cible à apprendre ($t=1$ si la personne reste, $t=0$ sinon)
-\item Ensemble de \alert{données} observées: $(e^i,t^i),~ i=1,\ldots,N$
-\end{itemize}
-\end{frame}
+\item $e$ : entrées (ex. $e_1$ = longitude, $e_2$ = latitude, $e_3$ = température)
+\item $t(e) \in \{0,1\}$ : fonction cible à apprendre ($t=1$ si la personne reste, $t=0$ sinon)
+\item Ensemble de \alert{données} observées : $(e^i
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}

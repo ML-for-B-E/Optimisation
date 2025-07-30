@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Un cours d'introduction à l'apprentissage automatique, version EEIA Godomey 2025
+% Un cours d'introduction au machine learning, version EEIA Godomey 2025
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -40,7 +40,7 @@
 \begin{document}
 \title
 [~Optimisation pour l'apprentissage automatique]
-{Une introduction à l'optimisation pour l'apprentissage automatique}
+{Une introduction à l'optimisation pour le machine learning}
 \author
 [Le Riche et al.]
 {\normalsize Rodolphe Le Riche$^1$, Dédji Brian Whannou$^2$, Kévin Kpakpo Akouété$^3$, Espéran Padonou$^4$, Armance Darrobers$^5$, Loris Cros$^5$} 
@@ -73,7 +73,7 @@ L'école était organisée par l'ONG Bénin Excellence et la Fondation Vallet (c
 ).
 \begin{itemize}
 \item Le cours présente les concepts de base de l'optimisation numérique
-\item destiné à un public intéressé par l'apprentissage automatique
+\item destiné à un public intéressé par le machine learning
 \item avec un niveau équivalent à une année après le baccalauréat
 \item à travers des exemples codés en python « from scratch »
 \item Limite : les algorithmes ne sont pas ceux utilisés en deep learning de pointe, mais les concepts principaux liés à la descente de gradient sont présentés.
@@ -123,34 +123,63 @@ L’optimisation est une \footnote{non unique, incomplète quand on considère l
 \textbf{
 Exemple d’optimisation :
 \\
-Apprendre comme un problème d’optimisation
+Apprentissage
 }
 }% fin color
 \end{center}
 \end{frame}
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Réseau de neurones comme fonction paramétrée}
-Trouver $x$, les poids et biais du réseau de neurones (NN), de sorte que la fonction $y(\cdot \mid x)$ reproduise au mieux les données observées.
+Trouver $x$, les poids et les biais du réseau de neurones (NN), de sorte que la fonction $y(\cdot \mid x)$ se rapproche des données observées.
 \vskip\baselineskip
 \begin{minipage}{0.8\textwidth}
 \definecolor{darkgreen}{RGB}{0, 100, 0}
-% (le TikZ est identique à l'original)
+\begin{tikzpicture}
+\node[anchor=south west,inner sep=0, outer sep=0] (contour) at (0,0) {\includegraphics[width=\textwidth]{neural_net_as_param_function.pdf}};
+\begin{scope}[x={(contour.south east)},y={(contour.north west)}]
+%\draw[help lines,xstep=0.1,ystep=0.1] (0,0) grid (1,1);
+\node[] (e_net) at (-0.03,0.55) {$e$};
+\node[] (x_net1) at (0.08,0.85) {$x_{1,\ldots}$};
+\node[] (x_net2) at (0.25,0.30) {$x_{\ldots,n}$};
+\node[] (y_net) at (0.42,0.55) {$y(e \mid x)$};
+\node[] (y_lab) at (0.56,0.91) {$t,y$};
+\node[] (x_lab) at (0.96,-0.02) {$e$};
+\node[text=blue] (yblue) at (1.03,0.63) {$y(e \mid x)$};
+\node[text=darkgreen] (ygreen) at (1.05,0.52) {$y(e \mid x')$};
+\node[text=red] (yred) at (1.02,0.40) {$y(e \mid x'')$};
+\node[text=magenta] (data) at (0.80,0.20) {données};
+\draw [magenta,->] (data.north) to (0.71,0.43);
+\draw [magenta,->] (data.north) to (0.79,0.41);
+\draw [magenta,->] (data.north) to (0.88,0.58);
+\end{scope}
+\end{tikzpicture}
 \end{minipage}
 \\
 {\small
 où $y(e \mid x) = X^L \Phi^L\left(\ldots \Phi^2(X^2 \Phi^1(X^1 e)) \ldots\right)$, \\
-$X^1,\ldots,X^L$ représentent les poids/biais arrangés en matrices pour chacune des $L$ couches, 
-et $\Phi^i$ est un vecteur de fonctions d’activation (ReLU, linéaire, sigmoïde, ReLU fuyante) pour la $i$-ème couche.
-}
+$X^1,\ldots,X^L$ sont les poids/biais organisés en matrices pour chacune des $L$ couches, \\
+$\Phi^i$ est un vecteur de fonctions d’activation (ReLU, linéaire, sigmoïde, leaky ReLU) pour la $i$-ième couche.
+} % end small
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Apprentissage comme optimisation : vue d’ensemble}
 \begin{center}
-% (TikZ inchangé)
+\begin{tikzpicture}
+%\draw[help lines,xstep=0.1,ystep=0.1] (0,0) grid (1,1);
+\node[draw,align=left] (data) at (0,2) {\textbf{Données} : \\ $(e^i,t^i)_{i=1,\ldots,N}$};
+\node[draw,align=left] (model) at (0,0) {\textbf{Modèle} : \\ $y(e \mid x)$ \vspace{0.3cm} \\ {\scriptsize c’est-à-dire} \\ $x \equiv w$ !};
+\node[draw,align=left] (distance) at (5,1) {\textbf{Distance} : \\ $f(x) \equiv \text{Dist}(Données, y(\cdot \mid x))$};
+\node[draw,align=left] (optim) at (4.7,-1) {\textbf{Optimiseur} : \\ $x^\star = \arg \min_{x \in \mathcal S} f(x)$};
+\draw [very thick,->] (data.east) to [out=0,in=145] (distance.west);
+\draw [very thick,->] (model.east) to [out=0,in=-145] (distance.west);
+\draw [very thick,->] (distance.south) to [out=-90,in=90] node[right] {$f$} (optim.north);
+\end{tikzpicture}
 \vskip 2\baselineskip
 $\Rightarrow$ \fcolorbox{red}{white}{\textcolor{black}{\textbf{Modèle appris} : $y(\cdot;x^\star)$}}
 \end{center}
@@ -158,38 +187,64 @@ $\Rightarrow$ \fcolorbox{red}{white}{\textcolor{black}{\textbf{Modèle appris} :
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Exemple : régression par réseau de neurones}
+\frametitle{Exemple d'optimisation : régression par RN}
 \vspace{-0.3cm}
-Apprendre une fonction à partir d’un ensemble discret et limité d’observations.
+apprendre une fonction à partir d’un ensemble discret et limité d’observations
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{neuralnet3-4-1-regress-crop.pdf}\
+%\vspace{-0.5cm}
+%\end{center}
 \begin{center}
-% (TikZ inchangé)
+\begin{minipage}{0.6\textwidth}
+\begin{tikzpicture}
+\node[anchor=south west,inner sep=0, outer sep=0] (contour) at (0,0) {\includegraphics[width=\textwidth]{neuralnet3-4-1-regress-crop.pdf}};
+\begin{scope}[x={(contour.south east)},y={(contour.north west)}]
+%\draw[help lines,xstep=0.1,ystep=0.1] (0,0) grid (1,1);
+\node[] (e1) at (0.6,0.2) {\small $e_1$};
+\node[] (e2) at (0.9,0.15) {\small $e_2$};
+\node[] (t) at (0.6,0.85) {\small $t(e)$};
+\node[] (e1NN) at (-0.05,0.75) {\small $e_1$};
+\node[] (e2NN) at (-0.05,0.60) {\small $e_2$};
+\node[] (yy) at (0.48,0.69) {\small $y(e \mathchar\numexpr"6000+`;\relax x)$};
+\draw[black,fill=black] (0.6,0.63) circle (.15ex);
+\draw[black,fill=black] (0.9,0.35) circle (.15ex);
+\draw[black,fill=black] (0.665,0.78) circle (.15ex);
+\draw[black,fill=black] (0.78,0.7) circle (.15ex);
+\draw[black,fill=black] (0.7,0.5) circle (.15ex);
+\draw[black,fill=black] (0.85,0.55) circle (.15ex);
+\draw[black,fill=black] (0.75,0.35) circle (.15ex);
+\end{scope}
+\end{tikzpicture}
+\end{minipage}
 \end{center}
 \vspace{-0.5cm}
 \begin{itemize}
-\item $e$ : entrées ou variables d’entrée, $t(e) \in \mathbb R$ : fonction cible à apprendre
-\item Ensemble de \alert{données} observées, représentées par «\tikz\draw[black,fill=black] (0,0) circle (.15ex);» : $(e^i,t^i \equiv t(e^i)),~ i=1,\ldots,N$
-\item \alert{Modèle} $y(e;x)$ : un NN avec entrées $e$ et poids/biais $x$, censé approximer $t(e)$ 
-\item \alert{Distance entre données et modèle} : erreur quadratique :
+\item $e$ entrées ou inputs, $t(e) \in \mathbb R$ : fonction cible à apprendre
+\item Ensemble de \alert{données} observées, ``\tikz\draw[black,fill=black] (0,0) circle (.15ex);'' : $(e^i,t^i \equiv t(e^i)),~ i=1,\ldots,N$
+\item \alert{Modèle} $y(e;x)$ : un réseau de neurones avec entrées $e$ et poids & biais $x$, censé approximer $t(e)$
+\item \alert{Distance données-modèle} sous forme d’erreur quadratique :
 \begin{equation*}
-f(x) = \frac{1}{2N} \sum_{i=1}^N (t^i - y(e^i;x))^2 
+f(x) = \frac{1}{2N} \sum_{i=1}^N (t^i - y(e^i;x))^2
 \end{equation*}
 \end{itemize}
 \end{frame}
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Exemple : classification par NN (1/3)}
-Exemple : prédire si une personne reste à la maison ou sort, en fonction de la longitude, latitude et température = problème de classification à 2 classes (dedans / dehors).\\
-TP : Prédire le genre à partir de mesures d’une personne.
+\frametitle{Exemple d'optimisation : classification par RN (1/3)}
+Exemple : prédire si une personne reste à la maison ou sort, en fonction de sa longitude, latitude et température = un problème de classification à 2 classes (dedans/dehors).\\
+TP : prédire le genre à partir des mesures d'une personne.
 \begin{center}
 \includegraphics[width=0.6\textwidth]{neuralnet3-4-1-classif-crop.pdf}\\
 \end{center}
 \begin{itemize}
-\item $e$ : entrées (ex. $e_1$ = longitude, $e_2$ = latitude, $e_3$ = température)
+\item $e$ : entrées (ex : $e_1$ = longitude, $e_2$ = latitude, $e_3$ = température)
 \item $t(e) \in \{0,1\}$ : fonction cible à apprendre ($t=1$ si la personne reste, $t=0$ sinon)
-\item Ensemble de \alert{données} observées : $(e^i
-
-
+\item Ensemble de \alert{données} observées : $(e^i,t^i),~ i=1,\ldots,N$
+\end{itemize}
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
@@ -253,7 +308,7 @@ Au minimum, la conception est ``optimale''.
 \vspace{-1cm}
 {\hfill\tiny (tiré de \cite{fukushima2010evolution})}
 \end{center}
-$x$ = position du dyke, géométrie, pression interne\\
+$x$ = position du barrage, géométrie, pression interne\\
 $f()$ = distance entre les mesures (du satellite RADARSAT-1) et le modèle (éléments de frontière, calcul non trivial)\\
 Au minimum, le modèle correspond le mieux aux mesures et devrait représenter le phénomène souterrain.
 \end{frame}
@@ -544,40 +599,240 @@ La taille des pas est proportionnelle à la norme du gradient.
 \end{frame}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{(organisation du code)} 
+\vspace{-0.4cm}
+\begin{itemize}
+\small
+\item Dans \texttt{src/optimcourse} : fichiers ressources pour l’optimisation 
+\begin{itemize}
+\small
+\item \texttt{gradient\_descent.py}, \texttt{restarted\_gradient\_descent.py} : algorithmes de descente basés sur le gradient ; la version actuelle avec pas fixe, et les versions à venir (autre direction, avec recherche linéaire), une version avec redémarrages aléatoires.
+\item \texttt{random\_search.py} : un algorithme de recherche aléatoire.
+\item \texttt{test\_functions.py} : une collection de fonctions de test.
+\item \texttt{3D\_plots.py} : trace une fonction à deux dimensions en 3D + courbes de niveau.
+\item \texttt{optim\_utilities.py} : routines supplémentaires.
+\end{itemize}
+\item Dans \texttt{src/optimcourse} : fichiers ressources pour le réseau de neurones codé à partir de zéro
+\begin{itemize}
+\small
+\item \texttt{activation\_functions.py} : collection de fonctions d’activation.
+\item \texttt{forward\_propagation.py} : collection de routines pour la propagation avant dans un réseau de neurones.
+\end{itemize}
+\item Dans \texttt{notebooks} : notebooks et script principal pour lancer les algorithmes de descente et l’apprentissage des réseaux de neurones.
+\end{itemize}
+\end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Algorithme de descente du plus rapide à pas fixe (2)} 
+\begin{itemize}
+\item Le choix du facteur de taille de pas $\bar\alpha$ est crucial : plus la fonction est raide, plus $\bar\alpha$ doit être petit. Valeur par défaut = 0.1
+\item Le vrai code (cf. \texttt{gradient\_descent.R}) est un peu plus long car il est nécessaire d’enregistrer les points visités.
+\end{itemize}
+\vspace{-0.5cm}
+\begin{center}
+{\scriptsize $f(x) = \frac{1}{2} x^\top H x$ , $H$ définie positive}\\
+\begin{minipage}[b]{0.3\textwidth}
+\includegraphics[width=\textwidth]{gradient_quad_2d_f_alpha01-crop.pdf} 
+\end{minipage}
+\hspace{1.5cm}
+\begin{minipage}[b]{0.3\textwidth}
+\includegraphics[width=\textwidth]{gradient_quad_2d_x_alpha01-crop.pdf} 
+\end{minipage}
+\end{center}
+\end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{(organisation du code)} \vspace{-0.4cm} \begin{itemize} \small \item Dans \texttt{src/optimcourse} : fichiers ressources pour l’optimisation \begin{itemize} \small \item \texttt{gradient_descent.py}, \texttt{restarted_gradient_descent.py} : algorithmes de descente basés sur le gradient ; la version actuelle à pas fixe, et celles à venir (autre direction, avec recherche linéaire), une version avec recherches aléatoires relancées. \item \texttt{random_search.py} : un algorithme de recherche aléatoire. \item \texttt{test_functions.py} : une collection de fonctions tests. \item \texttt{3D_plots.py} : trace une fonction bidimensionnelle en 3D + tracé des contours. \item \texttt{optim_utilities.py} : routines additionnelles. \end{itemize} \item Dans \texttt{src/optimcourse} : fichiers ressources pour le réseau de neurones codé de zéro \begin{itemize} \small \item \texttt{activation_functions.py} : la collection des fonctions d’activation. \item \texttt{forward_propagation.py} : collection de routines pour la propagation avant dans un réseau de neurones. \end{itemize} \item Dans \texttt{notebooks} : notebooks et script principal pour lancer les algorithmes de descente et entraîner les réseaux de neurones. \end{itemize} \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Algorithme de descente du gradient à pas fixe (2)} \begin{itemize} \item Le choix du facteur de taille de pas $\bar\alpha$ est critique : plus la fonction est raide, plus $\bar\alpha$ doit être petit. Valeur par défaut = 0.1 \item Le vrai code (cf. \texttt{gradient_descent.R}) est un peu plus long car il faut enregistrer les points visités. \end{itemize} \vspace{-0.5cm} \begin{center} {\scriptsize $f(x) = \frac{1}{2} x^\top H x$ , $H$ définie positive}\ \begin{minipage}[b]{0.3\textwidth} \includegraphics[width=\textwidth]{gradient_quad_2d_f_alpha01-crop.pdf} \end{minipage} \hspace{1.5cm} \begin{minipage}[b]{0.3\textwidth} \includegraphics[width=\textwidth]{gradient_quad_2d_x_alpha01-crop.pdf} \end{minipage} \end{center} \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Algorithme de descente du gradient à pas fixe (3)} $\bar\alpha=0.1$ sur la fonction de Rosenbrock (en forme de banane) en dimension $d=2$, exemple de divergence : \vskip\baselineskip \begin{center} \begin{minipage}[b]{0.3\textwidth} \includegraphics[width=\textwidth]{gradient_rosen_alpha0.1_f_diverges-crop.pdf} \end{minipage} \hspace{1.5cm} \begin{minipage}[b]{0.3\textwidth} \includegraphics[width=\textwidth]{gradient_rosen_alpha0.1_x_diverges-crop.pdf} \end{minipage} $x^\star = (1,1) , f(x^\star) = 0$ \end{center} \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Algorithme de descente du plus rapide à pas fixe (3)} 
+$\bar\alpha=0{,}1$ sur la fonction de Rosenbrock (en forme de banane) en dimension $d=2$, exemple de divergence :
+\vskip\baselineskip
+\begin{center}
+\begin{minipage}[b]{0.3\textwidth}
+\includegraphics[width=\textwidth]{gradient_rosen_alpha0.1_f_diverges-crop.pdf} 
+\end{minipage}
+\hspace{1.5cm}
+\begin{minipage}[b]{0.3\textwidth}
+\includegraphics[width=\textwidth]{gradient_rosen_alpha0.1_x_diverges-crop.pdf} 
+\end{minipage}
+$x^\star = (1,1) ~,~ f(x^\star) = 0$
+\end{center}
+\end{frame}
+
+\subsection{Recherche de pas (line search)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Descente avec recherche de pas} 
+\vspace{-0.5cm}
+À chaque itération, on cherche la meilleure taille de pas dans la direction de descente\footnote{Si $d^i$ n’est pas une direction de descente, alors $-d^i$ l’est. Preuve laissée en exercice.} $d^i$ (qui pour l’instant est $-\grad f(x^i)/\lVert \grad f(x^i) \rVert$, mais c’est plus général).\\ 
+Même algorithme qu’avant, il suffit de modifier l’instruction \textbf{pas} :
+\begin{block}{}
+\begin{algorithmic}
+\REQUIRE \ldots
+\STATE initialisations, mais pas de $\alpha$ cette fois \ldots
+\REPEAT
+\STATE incrémenter $i$, calculer $f(x^i)$ et $\grad f(x^i)$ \ldots
+\STATE \textbf{direction : } $d^i = - \grad f(x^i) / \lVert \grad f(x^i) \rVert$ ou toute autre direction de \textbf{descente}
+\STATE \textbf{pas : } \textcolor{red}{$\alpha^{i} = \arg \min_{\alpha > 0} f(x^i+\alpha d^i)$ \\
+\hspace{1.5cm}$x^{i+1} ~=~ x^i + \alpha^i d^i$
+} % fin rouge
+\UNTIL critère d’arrêt
+\RETURN meilleur point trouvé
+\end{algorithmic}
+\end{block}
+\end{frame}
+
 \subsection{Recherche linéaire}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Descente avec recherche linéaire} \vspace{-0.5cm} À chaque itération, on cherche la meilleure taille de pas dans la direction de descente\footnote{si $d^i$ n’est pas une direction de descente, $-d^i$ l’est. Preuve laissée en exercice.} $d^i$ (qui pour l’instant est $-\grad f(x^i)/\lVert \grad f(x^i) \rVert$ mais peut être générale).\ Même algorithme que précédemment, on change juste l’instruction \textbf{pas} : \begin{block}{} \begin{algorithmic} \REQUIRE \ldots \STATE initialisations mais plus de $\alpha$ pour l’instant \ldots \REPEAT \STATE incrémenter $i$, calculer $f(x^i)$ et $\grad f(x^i)$ \ldots \STATE \textbf{direction : } $d^i = - \grad f(x^i) / \lVert \grad f(x^i) \rVert$ ou toute autre \textbf{direction de descente} \STATE \textbf{pas : } \textcolor{red}{$\alpha^{i} = \arg \min_{\alpha > 0} f(x^i+\alpha d^i)$ \ \hspace{1.5cm}$x^{i+1} = x^i + \alpha^i d^i$ } % fin rouge \UNTIL critères d’arrêt \RETURN meilleur résultat obtenu \end{algorithmic} \end{block} \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Recherche linéaire approximative (1)} Notation : pendant la recherche linéaire $i$, \begin{eqnarray*} x &=& x^i + \alpha d^i \ f(\alpha) &=& f(x^i + \alpha d^i) \ \frac{df(0)}{d\alpha} &=& \sum_{j=1}^n \frac{\partial f(x^i)}{\partial x_j} \frac{\partial x_j}{\partial \alpha} =\sum_{j=1}^n \frac{\partial f(x^i)}{\partial x_j} d^i_j = \grad f(x^i)^\top . d^i \end{eqnarray*} En pratique, optimiser parfaitement $\alpha^i$ est trop coûteux et inutile $\Rightarrow$ on approxime la recherche linéaire par une condition de décroissance suffisante : \begin{equation*} \text{trouver } \alpha^i \text{ tel que } f(x^i + \alpha^i d^i) < f(x^i) + \delta \alpha^i \grad f(x^i)^\top . d^i \end{equation*} où $\delta \in [0,1]$, c’est-à-dire réaliser une proportion $\delta$ du progrès promis par le développement de Taylor d’ordre 1. \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Recherche linéaire approximative (2)} Condition de décroissance suffisante réécrite avec la notation de recherche linéaire : \begin{equation*} \text{trouver } \alpha^i \text{ tel que } f(\alpha^i) < f(x^i) + \delta \alpha^i \frac{d f(0)}{d \alpha} \end{equation*} \centering \includegraphics[width=0.7\textwidth]{line_search_backtrack-crop.pdf} \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Recherche linéaire approximative (3)} À l’itération $i$ : \begin{block}{Recherche linéaire par retour en arrière (Armijo)} \begin{algorithmic} \REQUIRE $d^i$ une direction de descente, $x^i$, $\delta \in [0,1]$, $\rho \in ]0,1[$, $C>0$ \STATE (valeurs par défaut : $\delta=0.1,~\rho=0.5,~C=1$) \STATE initialiser la taille de pas : $\alpha = \max(C \times \lVert \grad f(x^i) \rVert , \sqrt{n}/100) $ \WHILE{$f(x^i + \alpha d^i) \ge f(x^i) + \delta \alpha \grad f(x^i)^\top d^i$} \STATE réduire la taille de pas : $\alpha \leftarrow \rho \times \alpha$ \ENDWHILE \RETURN $\alpha^i \leftarrow \alpha$ \end{algorithmic} \end{block} Désormais, on utilise la recherche linéaire, et le nombre d’appels à $f$ n’est plus égal au nombre d’itérations car plusieurs appels à la fonction peuvent avoir lieu lors d’une recherche linéaire à l’intérieur d’une seule itération. \end{frame}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Recherche linéaire approximative (1)} 
+Notation : lors de la recherche linéaire à l’itération $i$, 
+\begin{eqnarray*}
+x &=& x^i + \alpha d^i \\
+f(\alpha) &=& f(x^i + \alpha d^i) \\
+\frac{df(0)}{d\alpha} &=& \sum_{j=1}^n \frac{\partial f(x^i)}{\partial x_j} \frac{\partial x_j}{\partial \alpha}
+~=~\sum_{j=1}^n \frac{\partial f(x^i)}{\partial x_j} d^i_j
+~=~ \nabla f(x^i)^\top . d^i
+\end{eqnarray*}
+En pratique, optimiser parfaitement $\alpha^i$ est trop coûteux et peu utile 
+$\Rightarrow$ on approxime la recherche linéaire par une condition de décroissance suffisante :
+\begin{equation*}
+\text{trouver } \alpha^i \text{ tel que } f(x^i + \alpha^i d^i) < f(x^i) + \delta \alpha^i \nabla f(x^i)^\top . d^i
+\end{equation*}
+où $\delta \in [0,1]$, c’est-à-dire atteindre une proportion $\delta$ du progrès prévu par le développement de Taylor d’ordre 1.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Recherche linéaire approximative (2)} 
+Condition de décroissance suffisante réécrite avec la notation de recherche linéaire :
+\begin{equation*}
+\text{trouver } \alpha^i \text{ tel que } f(\alpha^i) < f(x^i) + \delta \alpha^i \frac{d f(0)}{d \alpha}
+\end{equation*}
+\centering
+\includegraphics[width=0.7\textwidth]{line_search_backtrack-crop.pdf} 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Recherche linéaire approximative (3)} 
+À l’itération $i$ :
+\begin{block}{Recherche linéaire par rétrogradation (Armijo)}
+\begin{algorithmic}
+\REQUIRE $d^i$ une direction de descente, $x^i$, $\delta \in [0,1]$, $\rho \in ]0,1[$, $C>0$
+\STATE (valeurs par défaut : $\delta=0.1,~\rho=0.5,~C=1$)
+\STATE initialiser le pas : $\alpha = \max\bigl(C \times \lVert \nabla f(x^i) \rVert , \sqrt{n}/100\bigr)$ 
+\WHILE{$f(x^i + \alpha d^i) \ge f(x^i) + \delta \alpha \nabla f(x^i)^\top d^i$}
+\STATE réduire le pas : $\alpha \leftarrow \rho \times \alpha$
+\ENDWHILE 
+\RETURN $\alpha^i \leftarrow \alpha$
+\end{algorithmic}
+\end{block}
+Dorénavant, on utilise la recherche linéaire, et le nombre d’appels à $f$ n’est plus égal au numéro d’itération puisque plusieurs évaluations de la fonction peuvent être faites au cours d’une même itération pendant la recherche linéaire.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Recherche linéaire approximative (4)} 
+Regardons ce que fait la recherche linéaire sur $f(x)=$ Rosenbrock, où un pas fixe faisait diverger
+\begin{center}
+\begin{minipage}[b]{0.3\textwidth}
+\includegraphics[width=\textwidth]{gradient_rosen_LS_f-crop.pdf} 
+\end{minipage}
+\hspace{1.cm}
+\begin{minipage}[b]{0.3\textwidth}
+\includegraphics[width=\textwidth]{gradient_rosen_LS_x-crop.pdf} 
+\end{minipage}
+\end{center}
+C’est mieux, mais pas parfait : les oscillations ralentissent fortement les progrès.
+\end{frame}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Vitesse de convergence du gradient} 
+$f(x) = \frac{1}{2} x^\top H x$ dans $n=10$ dimensions, $H>0$, non aligné avec les axes, nombre de condition = 10.
+\begin{center}
+\mbox{
+\begin{minipage}[c]{0.37\textwidth}
+\includegraphics[width=\textwidth,height=6cm]{gradient_quad_d10_cond10_LS-lin-crop.pdf} 
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}[c]{0.57\textwidth}
+Empiriquement (pour les démonstrations et plus d’informations cf. \cite{ravikumar17}) : sur des fonctions convexes et différentiables, la recherche par gradient avec recherche linéaire progresse à une vitesse telle que
+$f(x^t) \propto \xi \gamma^t$ où $\gamma \in [0,1[$.  
+Équivalent à dire que pour obtenir $f(x^t) < \varepsilon$, il faut $t > \mathcal{O}(\log(1/\varepsilon))$.
+\vskip\baselineskip
+{\scriptsize
+$\log f(x^t) \propto t \log(\gamma) + \log(\xi) ~\Rightarrow~ \log(\gamma) < 0$ pente de la courbe verte.\\
+$\xi \gamma^t < \varepsilon \Leftrightarrow t > \frac{\log(\varepsilon) - \log(\xi)}{\log(\gamma)} = \frac{-1}{\log(\gamma)} \log(\xi/\varepsilon)$\\
+$\Rightarrow~ t > \mathcal{O}(\log(1/\varepsilon))$.
+} % fin scriptsize
+\end{minipage}
+} % fin mbox
+\end{center}
+\end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Recherche linéaire approximative (4)} Regardons ce que fait la recherche linéaire sur $f(x)=$ fonction de Rosenbrock où le pas fixe a divergé \begin{center} \begin{minipage}[b]{0.3\textwidth} \includegraphics[width=\textwidth]{gradient_rosen_LS_f-crop.pdf} \end{minipage}
-\hspace{1.cm} \begin{minipage}[b]{0.3\textwidth} \includegraphics[width=\textwidth]{gradient_rosen_LS_x-crop.pdf} \end{minipage} \end{center} Mieux, mais pas parfait : les oscillations ralentissent fortement les progrès. \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Vitesse de convergence du gradient} $f(x) = \frac{1}{2} x^\top H x$ en dimension $n=10$, $H>0$, non alignée avec les axes, nombre de condition = 10. \begin{center} \mbox{ \begin{minipage}[c]{0.37\textwidth} \includegraphics[width=\textwidth,height=6cm]{gradient_quad_d10_cond10_LS-lin-crop.pdf} \end{minipage} \hspace{0.5cm} \begin{minipage}[c]{0.57\textwidth} Empiriquement (pour les démonstrations et plus d'infos cf. \cite{ravikumar17}) : sur des fonctions convexes et différentiables, la recherche par gradient avec recherche linéaire progresse à une vitesse telle que $f(x^t) \propto \xi \gamma^t$ où $\gamma \in [0,1[$. Équivalent à dire que pour atteindre $f(x^t) < \varepsilon$, il faut $t > \mathcal{O}(\log(1/\varepsilon))$ \vskip\baselineskip {\scriptsize $\log f(x^t) \propto t \log(\gamma) + \log(\xi) \Rightarrow \log(\gamma) < 0$ pente de la courbe verte.\ $\xi \gamma^t < \varepsilon \Leftrightarrow t > \frac{\log(\varepsilon) - \log(\xi)}{\log(\gamma)} = \frac{-1}{\log(\gamma)} \log(\xi/\varepsilon)$\ $\Rightarrow~ t > \mathcal{O}(\log(1/\varepsilon))$. } % fin scriptsize \end{minipage} } % fin mbox \end{center} \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Oscillations en descente de gradient} La recherche linéaire parfaite résout \begin{equation*} \alpha^i = \arg\min_{\alpha>0} f(\alpha) \text{ où } f(\alpha) = f(x^i+\alpha d^i) \end{equation*} Conditions nécessaires pour la taille de pas optimale : \begin{equation*} \frac{df(\alpha^i)}{d\alpha} = \sum_{j=1}^n \frac{\partial f(x^i + \alpha^i d^i)}{\partial x_j} \frac{\partial x_j}{\partial \alpha} = \grad f(x^{i+1})^\top \cdot d^i = 0 \end{equation*} Si la direction est le gradient, \begin{equation*} {-d^{i+1}}^\top \cdot d^i = 0 ~\text{ c’est-à-dire } d^{i+1} \text{ et } d^i \text{ sont perpendiculaires} \end{equation*} \begin{center} \includegraphics[width=\textwidth]{oscillations-crop.pdf} \end{center} \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Oscillations de la descente de gradient} 
+La recherche linéaire parfaite consiste à résoudre
+\begin{equation*}
+\alpha^i = \arg\min_{\alpha>0} f(\alpha) ~\text{où}~ f(\alpha) = f(x^i + \alpha d^i) 
+\end{equation*}
+Conditions nécessaires pour le pas optimal : 
+\begin{equation*}
+\frac{df(\alpha^i)}{d\alpha} = \sum_{j=1}^n \frac{\partial f(x^i + \alpha^i d^i)}{\partial x_j} \frac{\partial x_j}{\partial \alpha}
+= \nabla f(x^{i+1})^\top . d^i = 0
+\end{equation*}
+Si la direction est le gradient, alors
+\begin{equation*}
+-{d^{i+1}}^\top . d^i = 0 ~\text{ c’est-à-dire } d^{i+1} \text{ et } d^i \text{ sont perpendiculaires}
+\end{equation*}
+\begin{center}
+\includegraphics[width=\textwidth]{oscillations-crop.pdf} 
+\end{center}
+\end{frame}
+
 \section{Recherches améliorées basées sur le gradient}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Plan du cours} \begin{multicols}{2} \begin{center} \textbf{Une introduction à l’optimisation pour l’apprentissage automatique} \end{center} \tableofcontents[currentsection] \end{multicols} \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}%[allowframebreaks]
+\frametitle{Plan du cours} 
+\begin{multicols}{2}
+\begin{center} \textbf{Introduction à l’optimisation pour l’apprentissage automatique} \end{center}
+\tableofcontents[currentsection]
+\end{multicols}
+\end{frame}
+
+
 \subsection{Directions de recherche pour accélération}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %\begin{frame} %\frametitle{Gradient avec momentum (1)} %Rappel de la descente de gradient à pas fixe, %\begin{equation*} %%x^{i+1} = x^i + \alpha s^i \quad\text{ où }\quad s^i= -\grad f(x^i) %x^{i+1}= x^i - \bar\alpha \grad f(x^i) \quad\text{ c’est-à-dire } s^i = x^{i+1}-x^i = - \bar\alpha \grad f(x^i) %\end{equation*} %$s^i$, le pas, éventuellement corrigé par une recherche linéaire ($x^{i+1}= x^i + \alpha^i s^i/\lVert s^i \rVert$). %Introduisons un momentum (une mémoire) dans le pas de recherche \cite{polyak1964some}, %\begin{equation*} %s^i = -\bar\alpha\grad f(x^i) + \beta (x^i -x^{i-1}) %\end{equation*} %où\footnote{alternativement, pour un momentum variable selon l’itération, $\beta^i=(i-2)/(i+1)$} $\beta = 0.9$.\ %\vspace{-0.2cm} %\begin{minipage}[c]{0.5\textwidth} %Cela devrait aider à éviter les oscillations qui surviennent au fond des vallées.\ %$s^i$ reste une direction de descente (en supposant une recherche linéaire parfaite). %\end{minipage} %\begin{minipage}[c]{0.4\textwidth} %\begin{center} %\includegraphics[width=0.9\textwidth]{momentum-crop.pdf} %\end{center} %\end{minipage} %\end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Changer la direction de recherche} 
+Les recherches par gradient améliorées modifient légèrement (mais de manière importante) la direction de recherche par rapport à l’opposé du gradient :
+\begin{itemize}
+\item \textbf{Momentum} : la direction de recherche = opposé du gradient déplacé légèrement vers la direction de recherche précédente.
+\item \textbf{Nesterov} \cite{nesterov1983method} : la direction de recherche = direction du momentum avec une anticipation du point où sera évalué le prochain gradient.
+\item \textbf{Adam} \cite{kingma2014adam} : méthode de pointe en apprentissage profond. Méthode du gradient stochastique avec adaptation indépendante de chaque variable basée sur le momentum.
+\end{itemize}
+\end{frame}
 
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %\begin{frame} %\frametitle{Gradient avec momentum (2)} %%Retour à Rosenbrock, $d=2$, $x^\star = (1,1) , f(x^\star) = 0$,\ %%budget=4000, $x^1=(4,4)$ %%\vspace{-0.3cm} %%\begin{center} %%\begin{minipage}[c]{0.35\textwidth} %%\begin{center} %%gradient\ %%\includegraphics[width=\textwidth]{gradient_rosen_LS_budg4000_x-crop.pdf} %%\end{center} %%\end{minipage} %%\begin{minipage}[c]{0.35\textwidth} %%\begin{center} %%momentum\ %%\includegraphics[width=\textwidth]{momentum_rosen_LS_budg4000_x-crop.pdf} %%\end{center} %%\end{minipage} %%\end{center} %%L'accélération par momentum permet de trouver la solution. %Fonction quadratique, 10 dimensions, nombre de condition = 300, départ depuis [4,\ldots,4] %\begin{center} %\includegraphics[width=0.7\textwidth]{grad_momentum_quad_10D.pdf} %\end{center} %L'accélération par momentum permet un gain de 3 ordres de grandeur dans cette vallée très raide. %\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %\begin{frame} %\frametitle{Gradient accéléré de Nesterov (NAG)} %Même idée que la direction momentum, mais on anticipe la position du point suivant dans le calcul du gradient %\cite{nesterov1983method}: %\begin{equation*} %s^i = -\bar\alpha \grad f(x^i+\beta (x^i-x^{i-1})) + \beta (x^i -x^{i-1}) %\end{equation*} %\begin{minipage}[c]{0.5\textwidth} %Sur le schéma, $\grad f$ tourne vers le haut et le pas est ajusté en conséquence.\ %$s^i$ n'est plus nécessairement une direction de descente. %\end{minipage} %\begin{minipage}[c]{0.4\textwidth} %\begin{center} %\includegraphics[width=0.9\textwidth]{nag-crop.pdf} %\end{center} %\end{minipage} %\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Changement de direction de recherche} Les méthodes améliorées de gradient modifient légèrement (mais de façon importante) la direction de recherche par rapport à la direction opposée au gradient : \begin{itemize} \item Momentum : direction de recherche = direction opposée au gradient déplacée légèrement vers la direction de recherche précédente. \item Nesterov \cite{nesterov1983method} : direction de recherche = direction momentum avec une anticipation du point du prochain gradient. \item Adam \cite{kingma2014adam} : état de l’art en apprentissage profond. Méthode de gradient stochastique avec adaptation indépendante de chaque variable basée sur le momentum. \end{itemize} \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \begin{frame} \frametitle{Comparaison des méthodes (1)} Rosenbrock, $d=2$ : capacité à gérer les ravins courbes \begin{center} \includegraphics[width=0.4\textwidth]{rosen_comparison-crop.pdf} \ vert=gradient, rouge=momentum, violet=NAG \end{center} \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Comparaison des méthodes (1)} 
+Rosenbrock, $d=2$ : capacité à gérer des vallées incurvées
+\begin{center}
+\includegraphics[width=0.4\textwidth]{rosen_comparison-crop.pdf} \\
+vert = gradient, rouge = momentum, violet = NAG
+\end{center}
+\end{frame}
 
 
 

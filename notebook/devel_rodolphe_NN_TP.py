@@ -166,9 +166,10 @@ with open('./donnees_mensuration.csv', mode='r', encoding='utf-8') as file:
 
 # create inputs
 n_obs = len(meas_data)
-n_features = 6 # poids taille ventre hanche epaule chaussure
+n_features = 3 # poids taille ventre hanche epaule chaussure
 inputs = np.ndarray((n_obs,n_features))
-inputs[:,0:6]=[row[2:8] for row in meas_data[:]]
+# inputs[:,0:6]=[row[2:8] for row in meas_data[:]]
+inputs[:,0:3]=[[row[3],row[5],row[6]] for row in meas_data[:]]
 # outputs: male=0, female=1
 gender_col = [row[1] for row in meas_data[:]]
 gender = np.array([0 if g=='Masculin' else 1 for g in gender_col])
@@ -178,10 +179,10 @@ gender_data={"data":inputs,"target":gender}
 # ### Create the network
 # and calculate the cost function of the first, randomly initialized, network.
 
-used_network_structure = [6,5,1]
+used_network_structure = [3,3,1]
 used_activation = leaky_relu # [[sigmoid,sigmoid,sigmoid,leaky_relu,leaky_relu],[leaky_relu]]#[sigmoid,leaky_relu] #sigmoid # leaky_relu, sigmoid
 used_data = gender_data # simulated_data
-used_cost_function = cost_function_entropy # cost_function_mse
+used_cost_function = cost_function_mse # cost_function_entropy , cost_function_mse
 __is_logistic__ = True
 weights = create_weights(used_network_structure)
 weights_as_vector,_ = weights_to_vector(weights)
@@ -191,7 +192,7 @@ print("Number of weights to learn : ",dim)
 print("Initial cost of the NN : ",neural_network_cost(weights_as_vector))
 
 ###  a forward propagation
-# predicted_output = forward_propagation(inputs=simulated_data["data"],weights=weights,activation_functions=relu,logistic=True)
+predicted_output = forward_propagation(inputs=used_data["data"],weights=weights,activation_functions=used_activation,logistic=__is_logistic__)
 # print(predicted_output)
 
 # ### Learn the network
@@ -207,22 +208,28 @@ printlevel = 1
 #             )
 #
 
-res = restarted_gradient_descent(func=neural_network_cost, start_x=weights_as_vector,LB=LB,UB=UB,budget=3000,nb_restarts=3,
+res = restarted_gradient_descent(func=neural_network_cost, start_x=weights_as_vector,LB=LB,UB=UB,budget=3000,nb_restarts=2,
                                  printlevel=printlevel)
 print_rec(res=res, fun=neural_network_cost, dim=len(res["x_best"]),
            LB=LB, UB=UB , printlevel=printlevel, logscale = True)
 
 weights_best = vector_to_weights(res["x_best"],used_network_structure)
+print("Best NN weights:",weights_best)
+# compare data and NN predictions
+predicted_output = forward_propagation(inputs=used_data["data"],weights=weights_best,
+                                       activation_functions=used_activation,logistic=__is_logistic__)
+plt.plot(predicted_output)
+plt.plot(used_data["target"])
+plt.show()
+# print("data vs prediction\n")
+# print(np.append(used_data["target"].reshape(-1,1),predicted_output,axis=1))
+
 
 # a small study about the gradients ...
-# initial gradient
-init_grad = gradient_finite_diff(func=neural_network_cost , x=weights_as_vector , f_x=neural_network_cost(weights_as_vector))
-final_grad = gradient_finite_diff(func=neural_network_cost , x=res["x_best"] , f_x=neural_network_cost(res["x_best"]))
+## initial gradient
+# init_grad = gradient_finite_diff(func=neural_network_cost , x=weights_as_vector , f_x=neural_network_cost(weights_as_vector))
+# final_grad = gradient_finite_diff(func=neural_network_cost , x=res["x_best"] , f_x=neural_network_cost(res["x_best"]))
 #
-
-
-print("Best NN weights:",weights_best)
-
 
 ######### randopt comparison ######################
 # from optimcourse.random_search import random_opt
@@ -247,44 +254,44 @@ print("Best NN weights:",weights_best)
 # Compare the network prediction to the true function
 #
 
-# function definition
-dimFunc = 2
-LBfunc = [-5,-5]
-UBfunc = [5,5]
-fun = quadratic
-  
-# start drawing the function (necessarily dim==2)
-no_grid = 100
-# 
-x1 = np.linspace(start=LBfunc[0], stop=UBfunc[0],num=no_grid)
-x2 = np.linspace(start=LBfunc[1], stop=UBfunc[1],num=no_grid)
-x, y = np.meshgrid(x1, x2)
-xy = np.array([x,y])
-z = np.apply_along_axis(fun,0,xy)
-zNN = np.apply_along_axis(forward_propagation,0,xy,weights_best,used_activation)
-zNN = np.squeeze(zNN)
-
-# Create a figure with two 3D subplots side by side
-fig = plt.figure(figsize=(12, 6))
-# First 3D subplot
-ax1 = fig.add_subplot(121, projection='3d')  # 1 row, 2 columns, first subplot
-ax1.set_zlim(0,100)
-ax1.plot_surface(x, y, z, cmap='jet', shade= "false")
-# ax1.plot_surface(x, y, z, cmap='viridis')
-ax1.set_title('target function')
-ax1.set_xlabel('x')
-ax1.set_ylabel('y')
-ax1.set_zlabel('f')
-# Second 3D subplot
-ax2 = fig.add_subplot(122, projection='3d')  # 1 row, 2 columns, second subplot
-ax2.set_zlim(0,100)
-ax2.plot_surface(x, y, zNN, cmap='jet', shade= "false")
-# ax2.plot_surface(x, y, zNN, cmap='plasma')
-ax2.set_title('NN prediction')
-ax2.set_xlabel('x')
-ax2.set_ylabel('y')
-ax2.set_zlabel('f_{NN}')
-plt.tight_layout() # Adjust layout
-plt.show()
+# # function definition
+# dimFunc = 2
+# LBfunc = [-5,-5]
+# UBfunc = [5,5]
+# fun = quadratic
+#
+# # start drawing the function (necessarily dim==2)
+# no_grid = 100
+# #
+# x1 = np.linspace(start=LBfunc[0], stop=UBfunc[0],num=no_grid)
+# x2 = np.linspace(start=LBfunc[1], stop=UBfunc[1],num=no_grid)
+# x, y = np.meshgrid(x1, x2)
+# xy = np.array([x,y])
+# z = np.apply_along_axis(fun,0,xy)
+# zNN = np.apply_along_axis(forward_propagation,0,xy,weights_best,used_activation)
+# zNN = np.squeeze(zNN)
+#
+# # Create a figure with two 3D subplots side by side
+# fig = plt.figure(figsize=(12, 6))
+# # First 3D subplot
+# ax1 = fig.add_subplot(121, projection='3d')  # 1 row, 2 columns, first subplot
+# ax1.set_zlim(0,100)
+# ax1.plot_surface(x, y, z, cmap='jet', shade= "false")
+# # ax1.plot_surface(x, y, z, cmap='viridis')
+# ax1.set_title('target function')
+# ax1.set_xlabel('x')
+# ax1.set_ylabel('y')
+# ax1.set_zlabel('f')
+# # Second 3D subplot
+# ax2 = fig.add_subplot(122, projection='3d')  # 1 row, 2 columns, second subplot
+# ax2.set_zlim(0,100)
+# ax2.plot_surface(x, y, zNN, cmap='jet', shade= "false")
+# # ax2.plot_surface(x, y, zNN, cmap='plasma')
+# ax2.set_title('NN prediction')
+# ax2.set_xlabel('x')
+# ax2.set_ylabel('y')
+# ax2.set_zlabel('f_{NN}')
+# plt.tight_layout() # Adjust layout
+# plt.show()
 
 # # **FIN DU NOTEBOOK**

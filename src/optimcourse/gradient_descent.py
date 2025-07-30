@@ -228,6 +228,7 @@ def gradient_descent(
         res = record_any(
             rec=res, f=current_f, x=current_x, time=nb_fun_calls, printlevel=printlevel
         )
+        print(f'gradient_descent, iteration {iteration}, func calls {nb_fun_calls}',end='\r')
         if current_f < best_f:
             best_x = current_x
             best_f = current_f
@@ -314,4 +315,5 @@ def gradient_descent(
     if condition_gradient:
         stop_condition += "too small gradient"
     res["stop_condition"] = stop_condition
+    print('\ngradient descent done\n')
     return res

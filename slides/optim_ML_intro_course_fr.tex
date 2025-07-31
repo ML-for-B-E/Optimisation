@@ -72,10 +72,10 @@ L'école était organisée par l'ONG Bénin Excellence et la Fondation Vallet (c
 \url{https://www.fondationvallet.org/eeia}}
 ).
 \begin{itemize}
-\item Le cours présente les concepts de base de l'optimisation numérique
+\item Le cours présente les concepts de base d'optimisation
 \item destiné à un public intéressé par le machine learning
 \item avec un niveau équivalent à une année après le baccalauréat
-\item à travers des exemples codés en python « from scratch »
+\item à travers des exemples codés en python «from scratch»
 \item Limite : les algorithmes ne sont pas ceux utilisés en deep learning de pointe, mais les concepts principaux liés à la descente de gradient sont présentés.
 \end{itemize}
 Le code, les diapositives et le sujet de projet sont disponibles sur : {\scriptsize \url{https://github.com/ML-for-B-E/Optimisation}}
@@ -577,7 +577,9 @@ $\nabla f()$ n’est pas défini partout, exemple avec la norme L1 $= \sum_{i=1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Algorithme de la descente la plus raide à pas fixe} 
-Répéter les étapes dans la direction de la descente la plus raide, $-\nabla f(x^t)$ \cite{cauchy1847methode,curry1944method}. \\
+\vspace{-0.3cm}
+Répéter les étapes dans la direction de la descente la plus raide, $-
+\nabla f(x^t)$ \cite{cauchy1847methode,curry1944method}. \\
 La taille des pas est proportionnelle à la norme du gradient.
 \begin{block}{}
 \begin{algorithmic}
@@ -613,6 +615,8 @@ La taille des pas est proportionnelle à la norme du gradient.
 \item \texttt{3D\_plots.py} : trace une fonction à deux dimensions en 3D + courbes de niveau.
 \item \texttt{optim\_utilities.py} : routines supplémentaires.
 \end{itemize}
+\end{itemize}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -766,6 +770,7 @@ C’est mieux, mais pas parfait : les oscillations ralentissent fortement les pr
 \begin{frame}
 \frametitle{Vitesse de convergence du gradient} 
 $f(x) = \frac{1}{2} x^\top H x$ dans $n=10$ dimensions, $H>0$, non aligné avec les axes, nombre de condition = 10.
+\vspace{-0.4cm}
 \begin{center}
 \mbox{
 \begin{minipage}[c]{0.37\textwidth}
@@ -776,7 +781,7 @@ $f(x) = \frac{1}{2} x^\top H x$ dans $n=10$ dimensions, $H>0$, non aligné avec 
 Empiriquement (pour les démonstrations et plus d’informations cf. \cite{ravikumar17}) : sur des fonctions convexes et différentiables, la recherche par gradient avec recherche linéaire progresse à une vitesse telle que
 $f(x^t) \propto \xi \gamma^t$ où $\gamma \in [0,1[$.  
 Équivalent à dire que pour obtenir $f(x^t) < \varepsilon$, il faut $t > \mathcal{O}(\log(1/\varepsilon))$.
-\vskip\baselineskip
+%\vskip\baselineskip
 {\scriptsize
 $\log f(x^t) \propto t \log(\gamma) + \log(\xi) ~\Rightarrow~ \log(\gamma) < 0$ pente de la courbe verte.\\
 $\xi \gamma^t < \varepsilon \Leftrightarrow t > \frac{\log(\varepsilon) - \log(\xi)}{\log(\gamma)} = \frac{-1}{\log(\gamma)} \log(\xi/\varepsilon)$\\

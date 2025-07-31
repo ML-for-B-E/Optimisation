@@ -10,6 +10,9 @@ Created on Sun Jul 17 12:04:19 2022
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib  # maybe useful Ubuntu rodo ISIMA
+matplotlib.use('Qt5Agg') # maybe useful Ubuntu rodo ISIMA
+
 import test_functions
 
 
@@ -31,7 +34,7 @@ x, y = np.meshgrid(x1, x2)
 xy = np.array([x, y])
 z = np.apply_along_axis(fun, 0, xy)
 figure = plt.figure()
-axis = figure.gca(projection="3d")
+axis = figure.add_subplot(111, projection='3d')
 axis.set_zlim(0, 150)
 axis.plot_surface(x, y, z, cmap="jet", shade="false")
 plt.xlabel(xlabel="x1")

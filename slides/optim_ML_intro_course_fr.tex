@@ -189,13 +189,13 @@ $\Rightarrow$ \fcolorbox{red}{white}{\textcolor{black}{\textbf{Modèle appris} :
 \begin{frame}
 \frametitle{Exemple d'optimisation : régression par RN}
 \vspace{-0.3cm}
-apprendre une fonction à partir d’un ensemble discret et limité d’observations
+Apprendre une fonction à partir d’un ensemble discret et limité d’observations
 %\begin{center}
 %\includegraphics[width=0.6\textwidth]{neuralnet3-4-1-regress-crop.pdf}\
 %\vspace{-0.5cm}
 %\end{center}
 \begin{center}
-\begin{minipage}{0.6\textwidth}
+\begin{minipage}{0.5\textwidth}
 \begin{tikzpicture}
 \node[anchor=south west,inner sep=0, outer sep=0] (contour) at (0,0) {\includegraphics[width=\textwidth]{neuralnet3-4-1-regress-crop.pdf}};
 \begin{scope}[x={(contour.south east)},y={(contour.north west)}]
@@ -220,7 +220,7 @@ apprendre une fonction à partir d’un ensemble discret et limité d’observat
 \vspace{-0.5cm}
 \begin{itemize}
 \item $e$ entrées ou inputs, $t(e) \in \mathbb R$ : fonction cible à apprendre
-\item Ensemble de \alert{données} observées, ``\tikz\draw[black,fill=black] (0,0) circle (.15ex);'' : $(e^i,t^i \equiv t(e^i)),~ i=1,\ldots,N$
+\item Ensemble de \alert{données} observées : $(e^i,t^i \equiv t(e^i)),~ i=1,\ldots,N$
 \item \alert{Modèle} $y(e;x)$ : un réseau de neurones avec entrées $e$ et poids & biais $x$, censé approximer $t(e)$
 \item \alert{Distance données-modèle} sous forme d’erreur quadratique :
 \begin{equation*}
@@ -235,14 +235,13 @@ f(x) = \frac{1}{2N} \sum_{i=1}^N (t^i - y(e^i;x))^2
 \begin{frame}
 \frametitle{Exemple d'optimisation : classification par RN (1/3)}
 Exemple : prédire si une personne reste à la maison ou sort, en fonction de sa longitude, latitude et température = un problème de classification à 2 classes (dedans/dehors).\\
-TP : prédire le genre à partir des mesures d'une personne.
 \begin{center}
 \includegraphics[width=0.6\textwidth]{neuralnet3-4-1-classif-crop.pdf}\\
 \end{center}
 \begin{itemize}
-\item $e$ : entrées (ex : $e_1$ = longitude, $e_2$ = latitude, $e_3$ = température)
-\item $t(e) \in \{0,1\}$ : fonction cible à apprendre ($t=1$ si la personne reste, $t=0$ sinon)
-\item Ensemble de \alert{données} observées : $(e^i,t^i),~ i=1,\ldots,N$
+\item $e$ : entrées (ex: $e_1$ = longitude, $e_2$ = latitude, $e_3$ = température)
+\item $t(e) \in \{0,1\}$: fonction cible à apprendre ($t=1$ si la personne reste, $t=0$ sinon)
+\item Ensemble de \alert{données} observées: $(e^i,t^i),~ i=1,\ldots,N$
 \end{itemize}
 \end{frame}
 
@@ -262,7 +261,7 @@ pour obtenir $y(\cdot ; x) \in [0,1]$ \Tongey[1.5][green!60!white]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Exemple d'optimisation : classification par RN (3/3)}
-\alert{Erreur d'entropie croisée} comme distance modèle-données : 
+\alert{Erreur d'entropie croisée (logvraissemblance) } comme distance modèle-données : 
 \begin{equation*}
 f(x) = - \sum_{i=1}^N \{ t^i \log(y(e^i;x)) + (1-t^i) \log(1 - y(e^i;x))\}
 \end{equation*}
@@ -310,7 +309,7 @@ Au minimum, la conception est ``optimale''.
 \end{center}
 $x$ = position du barrage, géométrie, pression interne\\
 $f()$ = distance entre les mesures (du satellite RADARSAT-1) et le modèle (éléments de frontière, calcul non trivial)\\
-Au minimum, le modèle correspond le mieux aux mesures et devrait représenter le phénomène souterrain.
+Au minimum, le modèle correspond le mieux aux mesures et devrait représenter le phénomène.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -471,8 +470,8 @@ Par différences finies avant
 \end{equation*}
 {Démonstration : \scriptsize
 par Taylor,\\
-$f(x+he^i) = f(x) + h {e^i}^\top \cdot \nabla f(x) + \frac{h^2}{2} {e^i}^\top \mathrm{Hess} f(x+\rho h e^i) e^i, \quad \rho \in ]0,1[$ \\
-$\frac{\partial f(x)}{\partial x_i} = \frac{f(x+he^i)-f(x)}{h} - \frac{h}{2} {e^i}^\top \mathrm{Hess} f(x+\rho h e^i) e^i$ \\
+$f(x+he^i) = f(x) + h {e^i}^\top \cdot \nabla f(x) + \frac{h^2}{2} {e^i}^\top \hess f(x+\rho h e^i) e^i, \quad \rho \in ]0,1[$ \\
+$\frac{\partial f(x)}{\partial x_i} = \frac{f(x+he^i)-f(x)}{h} - \frac{h}{2} {e^i}^\top \hess f(x+\rho h e^i) e^i$ \\
 et en faisant tendre $h$ vers zéro $\square$
 }
 \end{minipage}
@@ -499,7 +498,7 @@ Une direction de recherche $d$ formant un angle aigu avec $-\nabla f(x)$ est une
 \\\vspace{0.8cm}
 {\normalsize
 Démonstration : par Taylor, $\forall \alpha,~\exists \epsilon \in [0,1]$ tel que
-$f(x+\alpha d) = f(x) + \alpha d^\top \cdot \nabla f(x) + \frac{\alpha^2}{2} d^\top \mathrm{Hess} f(x + \alpha \epsilon d) d$\\
+$f(x+\alpha d) = f(x) + \alpha d^\top \cdot \nabla f(x) + \frac{\alpha^2}{2} d^\top \hess f(x + \alpha \epsilon d) d$\\
 $\lim_{\alpha \rightarrow 0^+} \frac{f(x+\alpha d) - f(x)}{\alpha} = d^\top \cdot \nabla f(x) = - 1 \times \lVert \nabla f(x) \rVert \cos(d,-\nabla f(x))$ \\
 est négatif si le cosinus est positif $\square$
 }
@@ -577,7 +576,7 @@ $\nabla f()$ n’est pas défini partout, exemple avec la norme L1 $= \sum_{i=1}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Algorithme de la descente la plus raide à pas fixe (1)} 
+\frametitle{Algorithme de la descente la plus raide à pas fixe} 
 Répéter les étapes dans la direction de la descente la plus raide, $-\nabla f(x^t)$ \cite{cauchy1847methode,curry1944method}. \\
 La taille des pas est proportionnelle à la norme du gradient.
 \begin{block}{}
@@ -601,7 +600,7 @@ La taille des pas est proportionnelle à la norme du gradient.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{(organisation du code)} 
+\frametitle{(organisation du code) (1)} 
 \vspace{-0.4cm}
 \begin{itemize}
 \small
@@ -614,6 +613,15 @@ La taille des pas est proportionnelle à la norme du gradient.
 \item \texttt{3D\_plots.py} : trace une fonction à deux dimensions en 3D + courbes de niveau.
 \item \texttt{optim\_utilities.py} : routines supplémentaires.
 \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{(organisation du code) (2)} 
+\vspace{-0.4cm}
+\begin{itemize}
+\small
 \item Dans \texttt{src/optimcourse} : fichiers ressources pour le réseau de neurones codé à partir de zéro
 \begin{itemize}
 \small
@@ -625,6 +633,7 @@ La taille des pas est proportionnelle à la norme du gradient.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
 \frametitle{Algorithme de descente du plus rapide à pas fixe (2)} 
 \begin{itemize}
@@ -639,7 +648,7 @@ La taille des pas est proportionnelle à la norme du gradient.
 \end{minipage}
 \hspace{1.5cm}
 \begin{minipage}[b]{0.3\textwidth}
-\includegraphics[width=\textwidth]{gradient_quad_2d_x_alpha01-crop.pdf} 
+\includegraphics[width=0.9\textwidth]{gradient_quad_2d_x_alpha01-crop.pdf} 
 \end{minipage}
 \end{center}
 \end{frame}

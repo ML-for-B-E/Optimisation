@@ -546,7 +546,7 @@ $\nabla f()$ n’est pas défini partout, exemple avec la norme L1 $= \sum_{i=1}
 \end{frame}
 
 
-\section{Algorithme de la descente la plus raide}
+\section{Algorithme de la descente de gradient}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}%[allowframebreaks]
@@ -572,11 +572,11 @@ $\nabla f()$ n’est pas défini partout, exemple avec la norme L1 $= \sum_{i=1}
 \end{itemize}
 \end{frame}
 
-\subsection{Algorithme de la descente la plus raide à pas fixe}
+\subsection{Algorithme de la descente de gradient à pas fixe}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Algorithme de la descente la plus raide à pas fixe} 
+\frametitle{Algorithme de la descente de gradient à pas fixe} 
 \vspace{-0.3cm}
 Répéter les étapes dans la direction de la descente la plus raide, $-
 \nabla f(x^t)$ \cite{cauchy1847methode,curry1944method}. \\
@@ -639,9 +639,9 @@ La taille des pas est proportionnelle à la norme du gradient.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Algorithme de descente du plus rapide à pas fixe (2)} 
+\frametitle{Algorithme de descente de gradient à pas fixe (2)} 
 \begin{itemize}
-\item Le choix du facteur de taille de pas $\bar\alpha$ est crucial : plus la fonction est raide, plus $\bar\alpha$ doit être petit. Valeur par défaut = 0.1
+\item Le choix du facteur de taille de pas $\bar\alpha$ est crucial : plus la fonction est pentue, plus $\bar\alpha$ doit être petit. Valeur par défaut = 0.1
 \item Le vrai code (cf. \texttt{gradient\_descent.R}) est un peu plus long car il est nécessaire d’enregistrer les points visités.
 \end{itemize}
 \vspace{-0.5cm}
@@ -659,7 +659,7 @@ La taille des pas est proportionnelle à la norme du gradient.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Algorithme de descente du plus rapide à pas fixe (3)} 
+\frametitle{Algorithme de descente de gradient à pas fixe (3)} 
 $\bar\alpha=0{,}1$ sur la fonction de Rosenbrock (en forme de banane) en dimension $d=2$, exemple de divergence :
 \vskip\baselineskip
 \begin{center}
@@ -678,7 +678,7 @@ $x^\star = (1,1) ~,~ f(x^\star) = 0$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Descente avec recherche de pas} 
+\frametitle{Descente avec pas optimal} 
 \vspace{-0.5cm}
 À chaque itération, on cherche la meilleure taille de pas dans la direction de descente\footnote{Si $d^i$ n’est pas une direction de descente, alors $-d^i$ l’est. Preuve laissée en exercice.} $d^i$ (qui pour l’instant est $-\grad f(x^i)/\lVert \grad f(x^i) \rVert$, mais c’est plus général).\\ 
 Même algorithme qu’avant, il suffit de modifier l’instruction \textbf{pas} :
@@ -703,8 +703,8 @@ Même algorithme qu’avant, il suffit de modifier l’instruction \textbf{pas} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Recherche linéaire approximative (1)} 
-Notation : lors de la recherche linéaire à l’itération $i$, 
+\frametitle{Recherche en ligne approximative (1)} 
+Notation : lors de la recherche en ligne à l’itération $i$, 
 \begin{eqnarray*}
 x &=& x^i + \alpha d^i \\
 f(\alpha) &=& f(x^i + \alpha d^i) \\
@@ -713,7 +713,7 @@ f(\alpha) &=& f(x^i + \alpha d^i) \\
 ~=~ \nabla f(x^i)^\top . d^i
 \end{eqnarray*}
 En pratique, optimiser parfaitement $\alpha^i$ est trop coûteux et peu utile 
-$\Rightarrow$ on approxime la recherche linéaire par une condition de décroissance suffisante :
+$\Rightarrow$ on approxime la recherche en ligne par une condition de décroissance suffisante :
 \begin{equation*}
 \text{trouver } \alpha^i \text{ tel que } f(x^i + \alpha^i d^i) < f(x^i) + \delta \alpha^i \nabla f(x^i)^\top . d^i
 \end{equation*}
@@ -722,8 +722,8 @@ où $\delta \in [0,1]$, c’est-à-dire atteindre une proportion $\delta$ du pro
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Recherche linéaire approximative (2)} 
-Condition de décroissance suffisante réécrite avec la notation de recherche linéaire :
+\frametitle{Recherche en ligne approximative (2)} 
+Condition de décroissance suffisante réécrite avec la notation de recherche en ligne :
 \begin{equation*}
 \text{trouver } \alpha^i \text{ tel que } f(\alpha^i) < f(x^i) + \delta \alpha^i \frac{d f(0)}{d \alpha}
 \end{equation*}
@@ -733,9 +733,9 @@ Condition de décroissance suffisante réécrite avec la notation de recherche l
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Recherche linéaire approximative (3)} 
+\frametitle{Recherche en ligne approximative (3)} 
 À l’itération $i$ :
-\begin{block}{Recherche linéaire par rétrogradation (Armijo)}
+\begin{block}{Recherche en ligne par rétrogradation (Armijo)}
 \begin{algorithmic}
 \REQUIRE $d^i$ une direction de descente, $x^i$, $\delta \in [0,1]$, $\rho \in ]0,1[$, $C>0$
 \STATE (valeurs par défaut : $\delta=0.1,~\rho=0.5,~C=1$)
@@ -746,13 +746,13 @@ Condition de décroissance suffisante réécrite avec la notation de recherche l
 \RETURN $\alpha^i \leftarrow \alpha$
 \end{algorithmic}
 \end{block}
-Dorénavant, on utilise la recherche linéaire, et le nombre d’appels à $f$ n’est plus égal au numéro d’itération puisque plusieurs évaluations de la fonction peuvent être faites au cours d’une même itération pendant la recherche linéaire.
+Dorénavant, on utilise la recherche en ligne, et le nombre d’appels à $f$ n’est plus égal au numéro d’itération puisque plusieurs évaluations de la fonction peuvent être faites au cours d’une même itération pendant la recherche linéaire.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Recherche linéaire approximative (4)} 
-Regardons ce que fait la recherche linéaire sur $f(x)=$ Rosenbrock, où un pas fixe faisait diverger
+\frametitle{Recherche en ligne approximative (4)} 
+Regardons ce que fait la recherche en ligne sur $f(x)=$ Rosenbrock, où un pas fixe faisait diverger
 \begin{center}
 \begin{minipage}[b]{0.3\textwidth}
 \includegraphics[width=\textwidth]{gradient_rosen_LS_f-crop.pdf} 
@@ -778,7 +778,7 @@ $f(x) = \frac{1}{2} x^\top H x$ dans $n=10$ dimensions, $H>0$, non aligné avec 
 \end{minipage}
 \hspace{0.5cm}
 \begin{minipage}[c]{0.57\textwidth}
-Empiriquement (pour les démonstrations et plus d’informations cf. \cite{ravikumar17}) : sur des fonctions convexes et différentiables, la recherche par gradient avec recherche linéaire progresse à une vitesse telle que
+Empiriquement (pour les démonstrations et plus d’informations cf. \cite{ravikumar17}) : sur des fonctions convexes et différentiables, la recherche par gradient avec recherche en ligne progresse à une vitesse telle que
 $f(x^t) \propto \xi \gamma^t$ où $\gamma \in [0,1[$.  
 Équivalent à dire que pour obtenir $f(x^t) < \varepsilon$, il faut $t > \mathcal{O}(\log(1/\varepsilon))$.
 %\vskip\baselineskip
@@ -795,7 +795,7 @@ $\Rightarrow~ t > \mathcal{O}(\log(1/\varepsilon))$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Oscillations de la descente de gradient} 
-La recherche linéaire parfaite consiste à résoudre
+La recherche en ligne parfaite consiste à résoudre
 \begin{equation*}
 \alpha^i = \arg\min_{\alpha>0} f(\alpha) ~\text{où}~ f(\alpha) = f(x^i + \alpha d^i) 
 \end{equation*}
